@@ -11,14 +11,14 @@ namespace j_arb::learn_cpp::object_oriented_programming {
 
   public:
     OBJECT_ORIENTED_PROGRAMMING_API App();
-    OBJECT_ORIENTED_PROGRAMMING_API ~App();
-    OBJECT_ORIENTED_PROGRAMMING_API void set_title(
+    OBJECT_ORIENTED_PROGRAMMING_API virtual ~App();
+    OBJECT_ORIENTED_PROGRAMMING_API virtual void set_title(
       std::string const & title
     );
-    OBJECT_ORIENTED_PROGRAMMING_API void set_title(
+    OBJECT_ORIENTED_PROGRAMMING_API virtual void set_title(
       char const * title
     );
-    OBJECT_ORIENTED_PROGRAMMING_API std::string get_title() const;
+    OBJECT_ORIENTED_PROGRAMMING_API virtual std::string get_title() const;
 
   private:
     std::string title_m;
