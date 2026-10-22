@@ -1,0 +1,12 @@
+out/
+build
+install/
+dist/
+
+.misc/
+
+!.keep
+!.gitkeep
+
+.env*
+!.env.example
