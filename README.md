@@ -7,10 +7,13 @@
 + [TITLE](#j_arblearn_cppobject_oriented_programming)
 + [Layout](#layout-toc)
 + [CLI](#cli-toc)
-    - [1. Happy Path](#a-happy-path-toc)
+    - [1. Happy Path](#1-happy-path-toc)
         - [1.1. With test](#11-with-test)
         - [1.2. Without test](#12-without-test)
         - [1.3. Packaging](#13-packaging)
+    - [2. Flappy Path](#2-flappy-path)
+        - [2.1. Try `git worktree` (comsumer)](#21-try-git-worktree-consumer)
+        - [2.1.1. `git-worktree` Layout](#211-git-worktree-layout)
 
 
 ## Layout [^ToC](#table-of-content)
@@ -87,4 +90,50 @@ cpack --config out/build/CPackConfig.cmake `
     -G "ZIP;TGZ"
     -C (Debug|Release)
     "-DCPACK_COMPONENTS_ALL=core;core_runtime_dpes;resources"
+```
+
+### 2. Flappy Path [^ToC](#table-of-content)
+#### 2.1. Try `git-worktree` (consumer)
+```ps
+mkdir j_arb.learn_cpp.object_oriented_programming
+
+cd j_arb.learn_cpp.object_oriented_programming
+
+git clone --bare `
+    https://github.com/jayoadonis/j_arb.learn_cpp.object_oriented_programming.git `
+    .bare/
+
+set-content .git -value "gitdir: ./.bare" `
+    -nonewline `
+    -encoding ascii
+
+#REM: To avoid worktree collisions
+git -C .bare/ `
+    config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+
+git worktree add wt_main/ main
+
+cd wt_main/
+
+#REM: create new worktree
+cd ../
+git worktree add wt_new_branch/ -b new_branch
+
+#REM: rename worktree and corresponding branch
+git worktree move wt_new_branch wt_rename_branch
+cd ../wt_rename_branch
+git branch -m rename_branch
+
+#REM: remove worktree and corresponding branch
+cd ../
+git worktree remove wt_rename_branch
+git branch -d rename_branch
+```
+#### 2.1.1 `git-worktree` Layout
+```sh
+j_arb.learn_cpp.object_oriented_programming/
+|--- .bare/             #REM: Contain index/meta-data and more
+|--- .git/              #REM: (Hidden) point to `.bare/`
+|--- wt_main            #REM: main branch
+\--- wt_other_branch    #REM: main branch
 ```
