@@ -9,4 +9,5 @@ dist/
 !.gitkeep
 
 .env*
+!.env.root
 !.env.example
