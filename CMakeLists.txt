@@ -86,7 +86,7 @@ option(${project.TARGET_BASENAME_UP}_BUILD_TESTING
 option(${project.TARGET_BASENAME_UP}_PACKAGE
   "Package" ON)
 
-option(${project.TARGET_BASENAME_UP}_FETCH_CONTENT
+option(${project.TARGET_BASENAME_UP}_FETCHCONTENT
   "Fetch Content for external libraries" OFF)
 
 add_subdirectory("src/main/cpp")

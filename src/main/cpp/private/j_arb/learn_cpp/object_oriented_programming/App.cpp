@@ -3,7 +3,7 @@
 
 namespace j_arb::learn_cpp::object_oriented_programming {
 
-  App::App() : title_m("N/a") {
+  App::App() : m_title("N/a") {
 
   }
 
@@ -18,11 +18,11 @@ namespace j_arb::learn_cpp::object_oriented_programming {
   
   void App::set_title(char const* title) {
 
-    this->title_m = title;
+    this->m_title = title;
   }
 
   std::string App::get_title() const {
 
-    return this->title_m;
+    return this->m_title;
   }
 }

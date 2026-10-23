@@ -2,10 +2,10 @@ include(FetchContent)
 
 find_package(Catch2 3.16.0 QUIET)
 
-if(Catch2_FOUND AND NOT ${project.TARGET_BASENAME_UP}_FETCH_CONTENT)
+if(Catch2_FOUND AND NOT ${project.TARGET_BASENAME_UP}_FETCHCONTENT)
   message(STATUS "::: Catch2 3.16.0 found locally")
 else()
-  if(${project.TARGET_BASENAME_UP}_FETCH_CONTENT)
+  if(${project.TARGET_BASENAME_UP}_FETCHCONTENT)
     message(STATUS "::: Catch2 3.16.0, Fetching from GitHub...")
   else()
     message(STATUS "::: Catch2 3.16.0 not found locally. Fetching from GitHub...")

@@ -21,7 +21,7 @@ namespace j_arb::learn_cpp::object_oriented_programming {
     OBJECT_ORIENTED_PROGRAMMING_API virtual std::string get_title() const;
 
   private:
-    std::string title_m;
+    std::string m_title;
   };
 }
 

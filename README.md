@@ -11,6 +11,7 @@
         - [1.1. With test](#11-with-test)
         - [1.2. Without test](#12-without-test)
         - [1.3. Packaging](#13-packaging)
+        - [1.4. Configure with `--fresh` and `skip redownload for fetchcontent`](#14-configure-with---fresh-and-skip-redownload-fetchcontent-toc)
     - [2. Flappy Path](#2-flappy-path)
         - [2.1. Try `git worktree` (comsumer)](#21-try-git-worktree-consumer)
         - [2.1.1. `git-worktree` Layout](#211-git-worktree-layout)
@@ -90,6 +91,13 @@ cpack --config out/build/CPackConfig.cmake `
     -G "ZIP;TGZ"
     -C (Debug|Release)
     "-DCPACK_COMPONENTS_ALL=core;core_runtime_dpes;resources"
+```
+
+#### 1.4. Configure with `--fresh` and skip redownload fetchcontent [^ToC](#table-of-content)
+```ps
+cmake -S . -B out/build `
+    --fresh `
+    -DFETCHCONTENT_FULLY_DISCONNECTED=ON
 ```
 
 ### 2. Flappy Path [^ToC](#table-of-content)

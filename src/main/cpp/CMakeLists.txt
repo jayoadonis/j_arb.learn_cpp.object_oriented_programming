@@ -286,6 +286,11 @@ else()
   endif()
 endif()
 
+target_compile_definitions(
+  ${project.TARGET_BASENAME}_core
+  PRIVATE
+  _CRT_SECURE_NO_WARNINGS)
+
 if(TARGET ${project.TARGET_BASENAME}_resources)
   add_dependencies(
     ${project.TARGET_BASENAME}_core
