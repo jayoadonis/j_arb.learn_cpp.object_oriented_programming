@@ -37,4 +37,8 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::rule_of_
   };
 }
 
+#if defined(OBJECT_ORIENTED_PROGRAMMING_BUILD_HHO)
+# include "./Entity.cpp"
+#endif
+
 #endif

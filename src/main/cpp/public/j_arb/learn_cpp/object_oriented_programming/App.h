@@ -25,4 +25,8 @@ namespace j_arb::learn_cpp::object_oriented_programming {
   };
 }
 
+#if defined(OBJECT_ORIENTED_PROGRAMMING_BUILD_HHO)
+# include "j_arb/learn_cpp/object_oriented_programming/App.cpp"
+#endif
+
 #endif
