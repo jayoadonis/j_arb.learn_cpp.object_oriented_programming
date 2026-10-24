@@ -21,7 +21,17 @@ TEST_CASE("ENCAPSULATION ENTITY", "[unit]") {
 
     std::fprintf(stdout, 
       "::: ENCAPSULATION ENTITY, I: '%s'\n", entity_i.get_id());
+
     REQUIRE(std::strcmp(entity_i.get_id(), "test_123") == 0);
+
+    object_oriented_programming::
+      encapsulation::Entity * entity_ii 
+        = entity_i.clone();
+
+    REQUIRE(std::strcmp(entity_ii->get_id(), "test_123") == 0);
+
+    delete entity_ii;
+    entity_ii = nullptr;
   }
 
   SECTION("RULE OF ZERO", "[unit]") {
