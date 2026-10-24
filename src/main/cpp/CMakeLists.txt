@@ -82,7 +82,8 @@ if(${project.TARGET_BASENAME_UP}_BUILD_TESTING)
   target_compile_definitions(
     ${project.TARGET_BASENAME}_common
     INTERFACE
-    ${project.TARGET_BASENAME_UP}_BUILD_TESTING)
+    ${project.TARGET_BASENAME_UP}_BUILD_TESTING
+    _CRT_SECURE_NO_WARNINGS)
 endif()
 
 # REM: [x]; core_private INTERFACE
@@ -285,11 +286,6 @@ else()
       OPTIONAL)
   endif()
 endif()
-
-target_compile_definitions(
-  ${project.TARGET_BASENAME}_core
-  PRIVATE
-  _CRT_SECURE_NO_WARNINGS)
 
 if(TARGET ${project.TARGET_BASENAME}_resources)
   add_dependencies(
