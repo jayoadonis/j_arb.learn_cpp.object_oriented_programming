@@ -57,6 +57,12 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation {
       return *this;
     }
 
+    public: 
+      virtual ~Model() {
+
+        delete[] this->m_id;
+      }
+
     public: inline
       virtual void set_id(char const* id) 
     {
@@ -87,7 +93,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation {
 
       if(static_cast<unsigned int>(type) >= max_valid_type )
         return;
-        
+
       this->m_type = type;
     }
 
