@@ -1,10 +1,11 @@
 #ifndef J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_ENCAPSULATION_TYPE_H
 #define J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_ENCAPSULATION_TYPE_H
 
-namespace j_arb::learn_cpp::object_oriented_programming::encapsulation {
+namespace j_arb::learn_cpp::object_oriented_programming::encapsulation 
+{
 
-  enum class Type : unsigned int {
-
+  enum class Type : unsigned int 
+  {
     UNKNOWN = 0b0000'0000u,
     POLY = 1 << 1,
     ITEM = 1 << 2,
@@ -16,7 +17,6 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation {
   inline constexpr char const* get_type_str(
     Type const & type
   ) {
-    
     switch(type) {
       case Type::ACTOR:   return "ACTOR";
       case Type::ITEM:    return "ITEM";
