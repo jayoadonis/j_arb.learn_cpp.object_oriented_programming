@@ -37,12 +37,12 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation {
           return *this;
         }
 
-      protected: inline
+      protected: inline 
         Model(Model && other) noexcept : m_id(other.m_id) {
           other.m_id = nullptr;
         }
 
-      protected: inline
+      protected: inline 
         Model& operator=(Model && other) noexcept {
           if(this != &other) {
             delete[] this->m_id;
