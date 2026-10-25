@@ -1,4 +1,5 @@
 #include <cstring>
+#include <string_view>
 #include <catch2/catch_test_macros.hpp>
 #include "j_arb/learn_cpp/object_oriented_programming/encapsulation/Type.h"
 #include "j_arb/learn_cpp/object_oriented_programming/encapsulation/Model.h"
@@ -39,6 +40,16 @@ TEST_CASE("ENCAPSULATION MODEL", "[unit]") {
     REQUIRE(model_i.get_type() == 
       object_oriented_programming::
         encapsulation::Type::ITEM
+    );
+
+    REQUIRE(
+      std::string_view(
+        object_oriented_programming::
+          encapsulation::get_type_str(
+            model_i.get_type()
+          )
+      )
+      == "ITEM"
     );
   }
 }

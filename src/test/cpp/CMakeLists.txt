@@ -34,7 +34,18 @@ else()
 
   FetchContent_MakeAvailable(Catch2)
 
-  list(APPEND CMAKE_MODULE_PATH "${catch2_SOURCE_DIR}/extras")
+  list(INSERT CMAKE_MODULE_PATH 0
+    "${catch2_SOURCE_DIR}/extras")
+
+  if(TARGET Catch2)
+    target_link_libraries(Catch2
+      PRIVATE ${project.TARGET_BASENAME}_common)
+  endif()
+
+  if(TARGET Catch2WithMain)
+    target_link_libraries(Catch2WithMain
+      PRIVATE ${project.TARGET_BASENAME}_common)
+  endif()
 endif()
 
 include(Catch)
