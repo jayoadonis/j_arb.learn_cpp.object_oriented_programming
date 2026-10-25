@@ -79,9 +79,10 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation
       return new Model(*this);
     }
 
-    public: virtual Model&& move() noexcept 
-    {
-      return std::move(*this);
+    public: virtual void move_into(
+      Model & dest
+    ) noexcept {
+      dest = std::move(*this);
     }
 
     public: inline virtual void set_id(

@@ -1,5 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 #include <cstring>
+#include <string_view>
 #include "j_arb/learn_cpp/object_oriented_programming/inheritance/Player.h"
 
 TEST_CASE("INHERITANCE PLAYER", "[unit]") {
@@ -17,7 +18,29 @@ TEST_CASE("INHERITANCE PLAYER", "[unit]") {
       player_i.get_type()
       ==
       object_oriented_programming::
-        encapsulation::Type::ACTOR
+      encapsulation::Type::ACTOR
     );
+  }
+
+  SECTION("MOVE SEMANTIC") {
+
+    object_oriented_programming::
+      inheritance::Player player_i("Hunt");
+
+    REQUIRE(std::string_view(player_i.get_name())
+      == "Hunt");
+
+    object_oriented_programming::
+      inheritance::Player player_ii;
+
+    REQUIRE(std::string_view(player_ii.get_name())
+      == "N/a");
+
+    player_i.move_into(player_ii);
+
+    REQUIRE(player_i.get_name() == nullptr);
+
+    REQUIRE(std::string_view(player_ii.get_name())
+      == "Hunt");
   }
 }
