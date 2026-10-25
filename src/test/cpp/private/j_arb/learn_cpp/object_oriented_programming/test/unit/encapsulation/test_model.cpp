@@ -1,5 +1,6 @@
 #include <cstring>
 #include <catch2/catch_test_macros.hpp>
+#include "j_arb/learn_cpp/object_oriented_programming/encapsulation/Type.h"
 #include "j_arb/learn_cpp/object_oriented_programming/encapsulation/Model.h"
 
 TEST_CASE("ENCAPSULATION MODEL", "[unit]") {
@@ -16,5 +17,28 @@ TEST_CASE("ENCAPSULATION MODEL", "[unit]") {
     model_i.set_id("model_123");
 
     REQUIRE(std::strcmp(model_i.get_id(), "model_123") == 0);
+  }
+
+  SECTION("SET TYPE") {
+
+    object_oriented_programming::
+      encapsulation::Model model_i;
+
+    REQUIRE(model_i.get_type() == 
+      object_oriented_programming::
+        encapsulation::Type::UNKNOWN
+    );
+
+    object_oriented_programming::
+      encapsulation::Type type
+        = object_oriented_programming::
+            encapsulation::Type::ITEM;
+
+    model_i.set_type(type);
+
+    REQUIRE(model_i.get_type() == 
+      object_oriented_programming::
+        encapsulation::Type::ITEM
+    );
   }
 }

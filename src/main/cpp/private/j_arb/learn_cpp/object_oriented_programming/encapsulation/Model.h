@@ -1,6 +1,7 @@
 #ifndef J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_ENCAPSULATION_MODEL_H
 #define J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_ENCAPSULATION_MODEL_H
 
+#include "j_arb/learn_cpp/object_oriented_programming/encapsulation/Type.h"
 #include "j_arb/learn_cpp/object_oriented_programming/export.h"
 #include <cstring>
 
@@ -15,7 +16,8 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation {
 
       public: inline
         Model(char const * id) 
-          : m_id(new char[std::strlen(id)+1]) 
+          : m_id(new char[std::strlen(id)+1]),
+          m_type(Type::UNKNOWN) 
         {
           std::strcpy(this->m_id, id);
         }
@@ -70,8 +72,18 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation {
           return this->m_id;
         }
 
-      private:
-        char * m_id;
+      public: inline
+        virtual void set_type(Type const & type) {
+          this->m_type = type;
+        }
+
+      public: inline
+        virtual Type get_type() const {
+          return this->m_type;
+        }
+
+      private: char * m_id;
+      private: Type m_type;
     };
 }
 
