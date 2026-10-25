@@ -20,17 +20,17 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation
     public: inline Model(
       char const* id, Type const& type
     ) : 
-      m_id(new char[std::strlen(id) + 1]),
+      m_id_ptr(new char[std::strlen(id) + 1]),
       m_type(type)
     {
-      std::strcpy(this->m_id, id);
+      std::strcpy(this->m_id_ptr, id);
     }
 
     protected: inline Model(Model const& other) 
     {
-      std::size_t len = std::strlen(other.m_id);
-      this->m_id = new char[len + 1];
-      std::strcpy(this->m_id, other.m_id);
+      std::size_t len = std::strlen(other.m_id_ptr);
+      this->m_id_ptr = new char[len + 1];
+      std::strcpy(this->m_id_ptr, other.m_id_ptr);
 
       this->m_type = other.m_type;
     }
@@ -39,17 +39,17 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation
       Model const& other
     ) {
       if (this != &other) {
-        this->set_id(other.m_id);
+        this->set_id(other.m_id_ptr);
         this->set_type(other.m_type);
       }
       return *this;
     }
 
     protected: inline Model(Model&& other) noexcept : 
-      m_id(other.m_id),
+      m_id_ptr(other.m_id_ptr),
       m_type(other.m_type) 
     {
-      other.m_id = nullptr;
+      other.m_id_ptr = nullptr;
       other.m_type = Type::UNKNOWN;
     }
 
@@ -58,9 +58,9 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation
     ) noexcept 
     {
       if (this != &other) {
-        delete[] this->m_id;
-        this->m_id = other.m_id;
-        other.m_id = nullptr;
+        delete[] this->m_id_ptr;
+        this->m_id_ptr = other.m_id_ptr;
+        other.m_id_ptr = nullptr;
 
         this->m_type = other.m_type;
         other.m_type = Type::UNKNOWN;
@@ -70,8 +70,8 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation
 
     public: virtual ~Model() 
     {
-      delete[] this->m_id;
-      this->m_id = nullptr;
+      delete[] this->m_id_ptr;
+      this->m_id_ptr = nullptr;
     }
 
     public: virtual Model* clone() const 
@@ -90,21 +90,21 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation
     ) {
       if (!id) return;
 
-      if (std::strcmp(id, this->m_id) == 0)
+      if (std::strcmp(id, this->m_id_ptr) == 0)
         return;
 
       std::size_t len = std::strlen(id);
       char* new_buffer = new char[len + 1];
       std::strcpy(new_buffer, id);
 
-      delete[] this->m_id;
-      this->m_id = new_buffer;
+      delete[] this->m_id_ptr;
+      this->m_id_ptr = new_buffer;
     }
 
     public: inline virtual 
       char const* get_id() const 
     {
-      return this->m_id;
+      return this->m_id_ptr;
     }
 
     public: inline virtual void set_type(
@@ -124,7 +124,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation
       return this->m_type;
     }
 
-    private: char* m_id;
+    private: char* m_id_ptr;
     private: Type m_type;
   };
 }
