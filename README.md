@@ -27,6 +27,10 @@ j_arb.learn_cpp.object_oriented_programming/
 |--- cmake/
 |--- conan/
 |   \--- profile/
+|--- out/
+|   |--- build/
+|   |--- install/
+|   \--- dist/
 \--- src/
     |--- main/
     |   |--- cpp/
