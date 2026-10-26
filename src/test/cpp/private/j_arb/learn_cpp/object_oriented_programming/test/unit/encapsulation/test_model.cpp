@@ -3,6 +3,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include "j_arb/learn_cpp/object_oriented_programming/encapsulation/Type.h"
 #include "j_arb/learn_cpp/object_oriented_programming/encapsulation/Model.h"
+#include "j_arb/learn_cpp/object_oriented_programming/encapsulation/rule_of_three/Model.h"
 
 TEST_CASE("ENCAPSULATION MODEL", "[unit]") {
 
@@ -51,5 +52,14 @@ TEST_CASE("ENCAPSULATION MODEL", "[unit]") {
       )
       == "ITEM"
     );
+  }
+
+  SECTION("RULE OF THREE") {
+
+    object_oriented_programming::
+      encapsulation::rule_of_three::
+        Model model_i;
+
+    REQUIRE(std::string_view(model_i.get_id()) == "N/a");
   }
 }
