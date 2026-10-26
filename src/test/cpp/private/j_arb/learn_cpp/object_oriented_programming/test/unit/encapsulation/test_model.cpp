@@ -99,6 +99,11 @@ TEST_CASE("ENCAPSULATION MODEL", "[unit]") {
       encapsulation::Type::ITEM);
 
     REQUIRE(model_ii.equals(&model_i) != true);
+
+    model_ii.set_type(object_oriented_programming::
+      encapsulation::Type::ITEM);
+
+    REQUIRE(model_ii.equals(&model_i));
   }
 
   SECTION("RULE OF THREE") {
