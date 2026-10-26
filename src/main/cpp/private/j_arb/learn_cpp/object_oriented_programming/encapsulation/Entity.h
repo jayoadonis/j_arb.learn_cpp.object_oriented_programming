@@ -43,7 +43,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation {
     OBJECT_ORIENTED_PROGRAMMING_API
       virtual char const* get_id() const;
 
-    private: char* m_id;
+    private: char* m_id_ptr;
   };
 }
 

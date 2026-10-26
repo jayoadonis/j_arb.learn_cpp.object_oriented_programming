@@ -16,7 +16,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation
   class Model
   {
 
-    public: inline explicit Model() : Model("N/a", Type::UNKNOWN)
+    public: inline explicit Model() : Model(nullptr, Type::UNKNOWN)
     {
 
     }
@@ -24,10 +24,10 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation
     public: inline explicit Model(
       char const* id, Type const& type
     ) :
-      m_id_ptr(new char[std::strlen(id) + 1]),
+      m_id_ptr(new char[std::strlen(id ? id : "N/a") + 1]),
       m_type(type)
     {
-      std::strcpy(this->m_id_ptr, id);
+      std::strcpy(this->m_id_ptr, id ? id : "N/a");
     }
 
     protected: inline explicit Model(Model const& other)

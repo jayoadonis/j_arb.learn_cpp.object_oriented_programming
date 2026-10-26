@@ -12,7 +12,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::inheritance
   class Player : public encapsulation::Model
   {
 
-    public: explicit Player() : Player("N/a")
+    public: explicit Player() : Player(nullptr)
     {
 
     }
@@ -22,9 +22,9 @@ namespace j_arb::learn_cpp::object_oriented_programming::inheritance
         Player::gen_player_id(),
         encapsulation::Type::ACTOR
       ),
-      m_name_ptr(new char[std::strlen(name) + 1])
+      m_name_ptr(new char[std::strlen(name ? name : "N/a") + 1])
     {
-      std::strcpy(this->m_name_ptr, name);
+      std::strcpy(this->m_name_ptr, name ? name : "N/a");
     }
 
     public: virtual ~Player() override
