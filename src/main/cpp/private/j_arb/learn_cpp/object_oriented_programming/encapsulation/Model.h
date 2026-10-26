@@ -12,12 +12,12 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation
   class Model 
   {
 
-    public: inline Model() : Model("N/a", Type::UNKNOWN)
+    public: inline explicit Model() : Model("N/a", Type::UNKNOWN)
     {
 
     }
 
-    public: inline Model(
+    public: inline explicit Model(
       char const* id, Type const& type
     ) : 
       m_id_ptr(new char[std::strlen(id) + 1]),
@@ -26,7 +26,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation
       std::strcpy(this->m_id_ptr, id);
     }
 
-    protected: inline Model(Model const& other) 
+    protected: inline explicit Model(Model const& other) 
     {
       std::size_t len = std::strlen(other.m_id_ptr);
       this->m_id_ptr = new char[len + 1];
@@ -45,7 +45,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation
       return *this;
     }
 
-    protected: inline Model(Model&& other) noexcept : 
+    protected: inline explicit Model(Model&& other) noexcept : 
       m_id_ptr(other.m_id_ptr),
       m_type(other.m_type) 
     {

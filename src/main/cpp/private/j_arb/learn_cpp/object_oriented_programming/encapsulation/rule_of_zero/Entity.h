@@ -10,19 +10,19 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::rule_of_
   class Entity {
 
     public: OBJECT_ORIENTED_PROGRAMMING_API
-      Entity() = default;
+      explicit Entity() = default;
 
     public: OBJECT_ORIENTED_PROGRAMMING_API
       virtual ~Entity() = default;
 
     protected: OBJECT_ORIENTED_PROGRAMMING_API
-      Entity(Entity const& other) = default;
+      explicit Entity(Entity const& other) = default;
 
     protected: OBJECT_ORIENTED_PROGRAMMING_API
       virtual Entity& operator=(Entity const& other) = default;
 
     protected: OBJECT_ORIENTED_PROGRAMMING_API
-      Entity(Entity&& other) noexcept = default;
+      explicit Entity(Entity&& other) noexcept = default;
 
     protected: OBJECT_ORIENTED_PROGRAMMING_API
       virtual Entity& operator=(Entity&& other) noexcept = default;

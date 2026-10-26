@@ -12,12 +12,12 @@ namespace j_arb::learn_cpp::object_oriented_programming::inheritance
   class Player : public encapsulation::Model
   {
 
-    public: Player() : Player("N/a")
+    public: explicit Player() : Player("N/a")
     {
 
     }
 
-    public: Player(char const* name) :
+    public: explicit Player(char const* name) :
       encapsulation::Model(
         Player::gen_player_id(),
         encapsulation::Type::ACTOR
@@ -51,7 +51,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::inheritance
       }
     }
 
-    protected: Player(Player const& other) :
+    protected: explicit Player(Player const& other) :
       encapsulation::Model(other)
     {
       std::size_t len = std::strlen(other.m_name_ptr);
@@ -68,7 +68,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::inheritance
       return *this;
     }
 
-    protected: Player(Player&& other) noexcept :
+    protected: explicit Player(Player&& other) noexcept :
       encapsulation::Model(std::move(other)),
       m_name_ptr(other.m_name_ptr)
     {

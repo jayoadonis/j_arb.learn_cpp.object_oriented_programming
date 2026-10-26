@@ -9,7 +9,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation {
 
     public:
     OBJECT_ORIENTED_PROGRAMMING_API
-      Entity();
+      explicit Entity();
 
     public:
     OBJECT_ORIENTED_PROGRAMMING_API
@@ -21,7 +21,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation {
 
     protected:
     OBJECT_ORIENTED_PROGRAMMING_API
-      Entity(Entity const& entity);
+      explicit Entity(Entity const& entity);
 
     protected:
     OBJECT_ORIENTED_PROGRAMMING_API
@@ -29,7 +29,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation {
 
     protected:
     OBJECT_ORIENTED_PROGRAMMING_API
-      Entity(Entity&& entity) noexcept;
+      explicit Entity(Entity&& entity) noexcept;
 
     protected:
     OBJECT_ORIENTED_PROGRAMMING_API

@@ -10,7 +10,7 @@ namespace j_arb::learn_cpp::object_oriented_programming {
   class App {
 
   public:
-    OBJECT_ORIENTED_PROGRAMMING_API App();
+    OBJECT_ORIENTED_PROGRAMMING_API explicit App();
     OBJECT_ORIENTED_PROGRAMMING_API virtual ~App();
     OBJECT_ORIENTED_PROGRAMMING_API virtual void set_title(
       std::string const & title
