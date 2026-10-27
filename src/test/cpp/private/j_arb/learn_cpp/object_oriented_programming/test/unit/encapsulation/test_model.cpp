@@ -127,6 +127,28 @@ TEST_CASE("ENCAPSULATION MODEL", "[unit]") {
         Model model_ii(nullptr);
       
     REQUIRE(std::string_view(model_ii.get_id()) == "N/a");
+    
+    object_oriented_programming::
+      encapsulation::rule_of_three::
+        Model model_iii(
+          nullptr, 
+          object_oriented_programming::
+            encapsulation::Type::ITEM
+        );
 
+    REQUIRE(
+      model_iii.get_type() 
+      == 
+      object_oriented_programming::
+        encapsulation::Type::ITEM
+    );
+
+    REQUIRE(
+      std::string_view(model_iii.get_id())
+      == 
+      object_oriented_programming::
+        encapsulation::rule_of_three::
+          Model::get_default_id().get()
+    );
   }
 }

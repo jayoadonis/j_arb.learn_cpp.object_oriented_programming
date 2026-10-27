@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <cstring>
+#include "j_arb/learn_cpp/object_oriented_programming/encapsulation/Type.h"
 
 namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::rule_of_three
 {
@@ -16,8 +17,18 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::rule_of_
     ) {
     }
 
-    public: explicit Model(std::unique_ptr<char[]> id_uptr)
-      : m_id_uptr(std::move(id_uptr))
+    public: explicit Model(
+      std::unique_ptr<char[]> id_uptr
+    ) : Model(std::move(id_uptr), Type::UNKNOWN)
+    {
+    }
+
+    public: explicit Model(
+      std::unique_ptr<char[]> id_uptr,
+      Type type
+    ) :
+      m_id_uptr(std::move(id_uptr)),
+      m_type(type)
     {
       if (id_uptr == nullptr) {
         this->m_id_uptr = std::move(Model::get_default_id());
@@ -103,9 +114,19 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::rule_of_
       );
     }
 
+    public: virtual void set_type(Type type) 
+    {
+      this->m_type = type;
+    }
+
+    public: virtual Type get_type() const 
+    {
+      return this->m_type;
+    }
+
     private: std::unique_ptr<char[]> m_id_uptr = nullptr;
+    private: Type m_type;
   };
 }
-
 
 #endif
