@@ -4,7 +4,13 @@
 
 #include <memory>
 #include <cstring>
+#include <typeinfo>
+#include <iostream>
+#include <sstream>
+#include <utility>
+#include <algorithm>
 #include "j_arb/learn_cpp/object_oriented_programming/encapsulation/Type.h"
+#include "j_arb/learn_cpp/object_oriented_programming/utility/demangle.h"
 
 namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::rule_of_three
 {
@@ -114,14 +120,78 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::rule_of_
       );
     }
 
-    public: virtual void set_type(Type type) 
+    public: virtual void set_type(Type type)
     {
       this->m_type = type;
     }
 
-    public: virtual Type get_type() const 
+    public: virtual Type get_type() const
     {
       return this->m_type;
+    }
+
+    public: virtual std::size_t hash_code() const 
+    {
+      std::size_t typeid_hash = typeid(*this).hash_code();
+      std::size_t id_hash = std::hash<std::string>{}(
+        this->get_id()
+      );
+      std::size_t type_hash = std::hash<Type>{}(
+        this->get_type()
+      );
+
+      return typeid_hash 
+        ^ (id_hash + type_hash
+          + 0x9e3779b9 
+          + (typeid_hash << 6) + (typeid_hash >> 2));
+    }
+
+    public: virtual bool equals(Model const* other) const
+    {
+      if (other == nullptr) return false;
+
+      if (this == other) return true;
+
+      if (typeid(*this) != typeid(*other)) return false;
+
+      return std::string_view(this->get_id()) == other->get_id()
+        && this->get_type() == other->get_type();
+    }
+
+    public: friend bool operator==(
+      Model const& lhs, Model const& rhs
+      ) {
+      return lhs.equals(&rhs);
+    }
+
+    public: friend bool operator!=(
+      Model const& lhs, Model const& rhs
+      ) {
+      return !lhs.equals(&rhs);
+    }
+
+    public: virtual std::string to_string() const
+    {
+      std::ostringstream oss;
+      // oss << utility::
+      //  get_type_name_constexpr<decltype(*this)>()
+      //REM: [x] demangle name for GNU/CLANG
+      oss << utility::demangle(typeid(*this).name()) 
+        << "@"
+        << std::hex << this->hash_code()
+        << "["
+        << "m_id_ptr='" << this->get_id() << "', "
+        << "m_type='" << this->get_type() << "'"
+        << "]";
+
+      return oss.str();
+    }
+
+    public: friend std::ostream& operator<<(
+      std::ostream& os, Model const& model
+      ) {
+      os << model.to_string();
+      return os;
     }
 
     private: std::unique_ptr<char[]> m_id_uptr = nullptr;

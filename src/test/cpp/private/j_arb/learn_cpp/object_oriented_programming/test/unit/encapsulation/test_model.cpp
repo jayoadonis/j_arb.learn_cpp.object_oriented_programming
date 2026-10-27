@@ -5,6 +5,7 @@
 #include "j_arb/learn_cpp/object_oriented_programming/encapsulation/Type.h"
 #include "j_arb/learn_cpp/object_oriented_programming/encapsulation/Model.h"
 #include "j_arb/learn_cpp/object_oriented_programming/encapsulation/rule_of_three/Model.h"
+#include "j_arb/learn_cpp/object_oriented_programming/encapsulation/rule_of_three/Player.h"
 
 TEST_CASE("ENCAPSULATION MODEL", "[unit]") {
 
@@ -47,7 +48,7 @@ TEST_CASE("ENCAPSULATION MODEL", "[unit]") {
     REQUIRE(
       std::string_view(
         object_oriented_programming::
-          encapsulation::get_type_str(
+          encapsulation::get_type_cstr(
             model_i.get_type()
           )
       )
@@ -150,5 +151,22 @@ TEST_CASE("ENCAPSULATION MODEL", "[unit]") {
         encapsulation::rule_of_three::
           Model::get_default_id().get()
     );
+
+    std::cout << ">>>>101: " << model_i << "\n";
+
+    REQUIRE(model_i == model_i);
+    REQUIRE(model_i == model_ii);
+    REQUIRE(model_ii == model_i);
+    REQUIRE(model_iii != model_i);
+    REQUIRE(model_iii != model_ii);
+
+    object_oriented_programming::
+      encapsulation::rule_of_three::
+        Model * model_iv
+          = new object_oriented_programming::
+              encapsulation::rule_of_three::
+                Player();
+
+    std::cout << ">>>>102: " << *model_iv << "\n";
   }
 }

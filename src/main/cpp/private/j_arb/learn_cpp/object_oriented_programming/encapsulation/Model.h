@@ -162,7 +162,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation
         << '@' << std::hex << this->hash_code()
         << "[m_id_ptr='" << this->get_id()
         << "', m_type=''" << object_oriented_programming::
-        encapsulation::get_type_str(this->get_type()) << "'"
+        encapsulation::get_type_cstr(this->get_type()) << "'"
         << ']';
 
       return oss.str();
