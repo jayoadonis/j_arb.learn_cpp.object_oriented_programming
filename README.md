@@ -15,6 +15,11 @@
     - [2. Flappy Path](#2-flappy-path)
         - [2.1. Try `git worktree` (comsumer)](#21-try-git-worktree-consumer)
         - [2.1.1. `git-worktree` Layout](#211-git-worktree-layout)
++ [oop](#)
+    - [encapsulation](#) - private/public attributes and setter/getter
+    - [inheritance](#) - concrete inheritance
+    - [abstraction](#) - abstract class contracts
+    - [polymorphism](#) - all inheritance & interface contracts 
 
 
 ## Layout [^ToC](#table-of-content)
