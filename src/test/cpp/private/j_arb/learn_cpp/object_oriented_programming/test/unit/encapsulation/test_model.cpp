@@ -168,5 +168,30 @@ TEST_CASE("ENCAPSULATION MODEL", "[unit]") {
                 Player();
 
     std::cout << ">>>>102: " << *model_iv << "\n";
+
+    object_oriented_programming::
+      encapsulation::rule_of_three::
+        Model model_v(nullptr);
+
+    std::cout << ">>>>103: " << model_v << "\n";
+
+    object_oriented_programming::
+      encapsulation::rule_of_three::
+        Player player_i;
+
+    std::cout << ">>>>104: " << player_i << "\n";
+
+    object_oriented_programming::
+      encapsulation::rule_of_three::
+        Player player_ii("p-1");
+
+    std::cout << ">>>>105: " << player_ii << "\n";
+
+    object_oriented_programming::
+      encapsulation::rule_of_three::
+        Player player_iii(nullptr);
+
+    std::cout << ">>>>106: " << player_iii << "\n";
+
   }
 }

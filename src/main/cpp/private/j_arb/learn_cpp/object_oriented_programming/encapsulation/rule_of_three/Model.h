@@ -18,9 +18,8 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::rule_of_
   class Model
   {
 
-    public: explicit Model() : Model(
-      Model::get_default_id()
-    ) {
+    public: explicit Model() : Model(nullptr)
+    {
     }
 
     public: explicit Model(

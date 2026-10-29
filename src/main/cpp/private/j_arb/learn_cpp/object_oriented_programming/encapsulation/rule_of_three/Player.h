@@ -2,10 +2,23 @@
 #define J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_ENCAPSULATION_RULE_OF_THREE_PLAYER_H
 
 #include "./Model.h"
+#include <memory>
+#include <string_view>
 
 namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::rule_of_three {
 
   class Player : public Model {
+
+    public: explicit Player() : Player(nullptr) { }
+
+    public: explicit Player(std::string_view id) :
+      Model(nullptr)
+    {
+      Model::set_id(id);
+    }
+
+    public: virtual ~Player() override = default;
+
     // public: virtual std::string to_string() const override
     // {
     //   std::ostringstream oss;
