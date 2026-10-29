@@ -16,10 +16,10 @@
         - [2.1. Try `git worktree` (comsumer)](#21-try-git-worktree-consumer)
         - [2.1.1. `git-worktree` Layout](#211-git-worktree-layout)
 + [oop](#)
-    - [encapsulation](#) - private/public attributes and setter/getter
-    - [inheritance](#) - concrete inheritance
-    - [abstraction](#) - abstract class contracts
-    - [polymorphism](#) - all inheritance & interface contracts 
+    - [encapsulation](#) - concrete class
+    - [inheritance](#) - concrete class inheritance (without overriding)
+    - [abstraction](#) - abstract class & interface (hidden logic and with overriding)
+    - [polymorphism](#) - two or more abstract class & interfaces implementations
 
 
 ## Layout [^ToC](#table-of-content)
