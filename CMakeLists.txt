@@ -66,7 +66,7 @@ set(project.SRC_TEST_CXX_DIR
 set(project.SRC_MAIN_RESOURCES_DIR
   "${CMAKE_CURRENT_SOURCE_DIR}/src/main/resources")
 set(project.SRC_TEST_RESOURCES_DIR
-  "${CMAKE_CURRENT_SOURCE_DIR}/src/main/resources")
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/test/resources")
 
 option(${project.TARGET_BASENAME_UP}_BUILD_APP
   "Build App" ON)

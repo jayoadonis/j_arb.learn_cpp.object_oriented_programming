@@ -116,6 +116,12 @@ target_include_directories(
   INTERFACE
   "$<BUILD_INTERFACE:${project.SRC_MAIN_CXX_DIR}/private>")
 
+if(TARGET ${project.TARGET_BASENAME}_resources_test)
+  add_dependencies(
+    ${project.TARGET_BASENAME}_core_private_test
+    ${project.TARGET_BASENAME}_resources_test)
+endif()
+
 add_executable(
   ${project.TARGET_BASENAME}_app_test)
 set_target_properties(
