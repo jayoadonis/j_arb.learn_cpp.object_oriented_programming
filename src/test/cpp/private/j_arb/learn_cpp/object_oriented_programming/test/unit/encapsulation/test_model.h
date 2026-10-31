@@ -1,3 +1,6 @@
+#ifndef J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_TEST_UNIT_ENCAPSULATION_TEST_MODEL_H
+#define J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_TEST_UNIT_ENCAPSULATION_TEST_MODEL_H
+
 #include <cstring>
 #include <string_view>
 #include <iostream>
@@ -195,3 +198,5 @@ TEST_CASE("ENCAPSULATION MODEL", "[unit]") {
 
   }
 }
+
+#endif

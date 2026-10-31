@@ -1,3 +1,6 @@
+#ifndef J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_TEST_UNIT_ENCAPSULATION_TEST_ENTITY_H
+#define J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_TEST_UNIT_ENCAPSULATION_TEST_ENTITY_H
+
 #include <catch2/catch_test_macros.hpp>
 #include <cstring>
 #include <iostream>
@@ -105,3 +108,5 @@ TEST_CASE("ENCAPSULATION ENTITY", "[unit]") {
 
   }
 }
+
+#endif

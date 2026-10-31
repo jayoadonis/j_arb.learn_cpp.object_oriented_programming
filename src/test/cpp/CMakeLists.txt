@@ -109,7 +109,7 @@ target_sources(
   ${project.SRC_TEST_CXX_PRIVATE_IMPL_SET}
   INTERFACE
   FILE_SET HEADERS
-  BASE_DIRS "${project.SRC_TEST_CXX_DIR}/prviate"
+  BASE_DIRS "${project.SRC_TEST_CXX_DIR}/private"
   FILES ${project.SRC_TEST_CXX_PRIVATE_HEADER_SET})
 target_include_directories(
   ${project.TARGET_BASENAME}_core_private_test
