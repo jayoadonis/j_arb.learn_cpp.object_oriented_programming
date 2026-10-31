@@ -57,8 +57,8 @@ j_arb.learn_cpp.object_oriented_programming/
         |   \--- private/
         |       \--- j_arb/learn_cpp/object_oriented_programming/test/
         |           |--- main.{cc,cxx,cpp}
-        |           |--- unit/**/*..{cc,cxx,cpp}
-        |           \--- integration/**/*.{cc,cxx,cpp}
+        |           |--- unit/**/*..{h,hxx,hpp,tpp,inl}
+        |           \--- integration/**/*.{h,hxx,hpp,tpp,inl}
         \--- resources/
             \--- j_arb/learn_cpp/object_oriented_programming/test/
                 |--- .env.example 
