@@ -23,11 +23,11 @@
 #if   defined(OBJECT_ORIENTED_PROGRAMMING_BUILD_HHO) 
 #     define OBJECT_ORIENTED_PROGRAMMING_API             
 #     define OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL    
-#     define OBJECT_ORIENTED_PROGRAMMING_API_INLINE      inline 
+#     define OBJECT_ORIENTED_PROGRAMMING_API_INLINE   inline 
 
 //REM: (Shared) Build
 #elif defined(OBJECT_ORIENTED_PROGRAMMING_BUILD_SHARED)
-#     define OBJECT_ORIENTED_PROGRAMMING_API                OBJECT_ORIENTED_PROGRAMMING_EXPORT
+#     define OBJECT_ORIENTED_PROGRAMMING_API          OBJECT_ORIENTED_PROGRAMMING_EXPORT
 #     define OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL OBJECT_ORIENTED_PROGRAMMING_INTERNAL
 #     define OBJECT_ORIENTED_PROGRAMMING_API_INLINE   
 
@@ -46,13 +46,13 @@
 #endif
 
 //REM: (Testing override) Make internals visible
-#if   defined(OBJECT_ORIENTED_PROGRAMMING_BUILD_TESTING)
+#if defined(OBJECT_ORIENTED_PROGRAMMING_BUILD_TESTING)
 #     undef OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
 #     define OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL OBJECT_ORIENTED_PROGRAMMING_API
 #endif
 
 //REM: (Deprecation-macro) std c++ attribute
-#if   defined(__has_cpp_attribute) 
+#if defined(__has_cpp_attribute) 
 #     if __has_cpp_attribute(deprecated)
 #           define OBJECT_ORIENTED_PROGRAMMING_API_DEPRECATED          [[deprecated]]
 #           define OBJECT_ORIENTED_PROGRAMMING_API_DEPRECATED_MSG(msg) [[deprecated(msg)]]
@@ -71,8 +71,8 @@
 #ifndef OBJECT_ORIENTED_PROGRAMMING_API_DEPRECATED
 #     if defined(__has_attribute)
 #           if __has_attribute(deprecated)
-#           define OBJECT_ORIENTED_PROGRAMMING_API_DEPRECATED           __attribute__((deprecated))
-#           define OBJECT_ORIENTED_PROGRAMMING_API_DEPRECATED_MSG(msg)  __attribute__((deprecated(msg)))
+#                 define OBJECT_ORIENTED_PROGRAMMING_API_DEPRECATED           __attribute__((deprecated))
+#                 define OBJECT_ORIENTED_PROGRAMMING_API_DEPRECATED_MSG(msg)  __attribute__((deprecated(msg)))
 #           endif
 #     elif defined(__GNUC__) && (__GNUC__ >= 4)
             //REM: Fallback for very old GCC versions that lack __has_attribute
