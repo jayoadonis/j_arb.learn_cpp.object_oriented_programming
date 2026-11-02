@@ -1,5 +1,3 @@
-#ifndef J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_TEST_UNIT_TEST_I_H
-#define J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_TEST_UNIT_TEST_I_H
 
 #include <catch2/catch_test_macros.hpp>
 #include <cstdio>
@@ -18,5 +16,3 @@ TEST_CASE("TEST I", "[unit]") {
       "SEC II");
   }
 }
-
-#endif

@@ -1,6 +1,3 @@
-#ifndef J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_TEST_UNIT_INHERITANCE_TEST_PLAYER_H
-#define J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_TEST_UNIT_INHERITANCE_TEST_PLAYER_H
-
 #include <catch2/catch_test_macros.hpp>
 #include <cstring>
 #include <string_view>
@@ -47,5 +44,3 @@ TEST_CASE("INHERITANCE PLAYER", "[unit]") {
       == "Hunt");
   }
 }
-
-#endif
