@@ -30,19 +30,54 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::demo_i {
       this->set_id(id_sv);
       this->set_type(type);
     }
+    protected: explicit Entity(Entity const& other) :
+      Entity(other.get_id(), other.get_type())
+    {
+    }
+    protected: Entity& operator=(Entity const& other)
+    {
+      if (this != &other) {
+        this->set_id(other.get_id());
+        this->set_type(other.get_type());
+      }
+      return *this;
+    }
+    protected: explicit Entity(Entity&& other) noexcept :
+      m_id_ptr(other.m_id_ptr),
+      m_type(other.m_type)
+    {
+      other.m_id_ptr = nullptr;
+      other.m_type = Type::UNKNOWN;
+    }
+    protected: Entity& operator=(Entity&& other) noexcept
+    {
+      if (this != &other) {
 
+        delete[] this->m_id_ptr;
+
+        this->m_id_ptr = other.m_id_ptr;
+        this->m_type = other.m_type;
+
+        other.m_id_ptr = nullptr;
+        other.m_type = Type::UNKNOWN;
+
+      }
+      return *this;
+    }
     public: virtual ~Entity()
     {
       delete[] this->m_id_ptr;
     }
-
     public: virtual void set_id(
       std::string_view id_sv
     ) {
       if (id_sv.empty()) return;
 
-      if (this->m_id_ptr && id_sv == this->m_id_ptr)
+      if (this->m_id_ptr != nullptr
+        && this->m_id_ptr == id_sv
+        ) {
         return;
+      }
 
       std::size_t len = id_sv.size();
       char* buff_ptr = new char[len + 1];
@@ -83,30 +118,30 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::demo_i {
         && this->get_type() == other.get_type();
     }
 
-    public: virtual bool operator==(Entity const& other) const
+    public: bool operator==(Entity const& other) const
     {
       return this->equals(other);
     }
 
-    public: virtual bool operator!=(Entity const& other) const
+    public: bool operator!=(Entity const& other) const
     {
       return !this->equals(other);
     }
 
     public: virtual std::size_t hash_code() const
     {
-      std::size_t seed_hash 
+      std::size_t seed_hash
         = typeid(*this).hash_code();
-      std::size_t id_hash 
+      std::size_t id_hash
         = std::hash<std::string_view>{}(this->get_id());
-      std::size_t type_hash 
+      std::size_t type_hash
         = std::hash<Type>{}(this->get_type());
 
-      void (*combine_hash)(std::size_t&, std::size_t) 
-        = [](std::size_t& current_seed, std::size_t next_hash) {
-          current_seed ^= next_hash 
-            + 0x9e37'79b9U
-            + (current_seed << 6) + (current_seed >> 2);
+      void (*combine_hash)(std::size_t&, std::size_t)
+        = [](std::size_t& current_seed, std::size_t next_hash) -> void {
+        current_seed ^= next_hash
+          + 0x9e37'79b9U
+          + (current_seed << 6) + (current_seed >> 2);
         };
 
       combine_hash(seed_hash, id_hash);
@@ -118,12 +153,13 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::demo_i {
     public: virtual std::string to_string() const
     {
 
-      constexpr std::size_t hex_width = sizeof(std::size_t) * 2;
+      constexpr std::size_t hex_width 
+        = sizeof(std::size_t) * 2;
 
       std::ostringstream oss;
       oss << utility::demangle(typeid(*this).name())
         << "@"
-        << std::hex 
+        << std::hex
         << std::setw(hex_width) << std::setfill('0')
         << this->hash_code()
         << "["
@@ -134,67 +170,25 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::demo_i {
       return oss.str();
     }
 
-    public: friend std::ostream& operator<<(std::ostream& os, 
-      Entity const& entity) 
+    public: friend std::ostream& operator<<(std::ostream& os,
+      Entity const& entity)
     {
       os << entity.to_string();
       return os;
     }
 
-    protected: explicit Entity(Entity const& other) :
-      Entity(other.get_id(), other.get_type())
-    {
-    }
-
-    protected: explicit Entity(Entity&& other) noexcept :
-      m_id_ptr(nullptr),
-      m_type(Type::UNKNOWN)
-    {
-      *this = std::move(other);
-    }
-
-    protected: virtual Entity& operator=(Entity const& other)
-    {
-      if (this != &other) {
-        this->set_id(other.get_id());
-        this->set_type(other.get_type());
-      }
-      return *this;
-    }
-
-    protected: virtual Entity& operator=(Entity&& other) noexcept
-    {
-      if (this != &other) {
-        delete[] this->m_id_ptr;
-
-        this->m_id_ptr = other.m_id_ptr;
-        this->m_type = other.m_type;
-
-        other.m_id_ptr = nullptr;
-        other.m_type = Type::UNKNOWN;
-
-      }
-      return *this;
-    }
-
-    public: virtual Entity* cpy() const &
-    {
-      return new Entity(*this);
-    }
-
-    public: virtual Entity&& mv() && noexcept  
-    {
-      return std::move(*this);
-    }
-
     public: virtual std::unique_ptr<Entity> clone() const&
     {
+      //REM: Or do `virtual Entity* copy() const = 0`
+      // return std::unique_ptr<Entity>(this->copy());
       return std::unique_ptr<Entity>(new Entity(*this));
     }
 
-    //REM: Usage `std::move(value_instance).move()`
-    public: virtual std::unique_ptr<Entity> move()&&
+    //REM: Usage `std::move(value_instance).clone()`
+    public: virtual std::unique_ptr<Entity> clone()&&
     {
+      //REM: Or do `virtual Entity* move() = 0`
+      // return std::unique_ptr<Entity>(this->move());
       return std::unique_ptr<Entity>(new Entity(std::move(*this)));
     }
 

@@ -9,28 +9,33 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::rule_of_
 
   class Entity {
 
-    public: OBJECT_ORIENTED_PROGRAMMING_API
+    public: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
       explicit Entity() = default;
 
-    public: OBJECT_ORIENTED_PROGRAMMING_API
+    //REM: [x] I (dtor)
+    public: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
       virtual ~Entity() = default;
 
-    protected: OBJECT_ORIENTED_PROGRAMMING_API
+    //REM: [x] II (copy ctor)
+    protected: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
       explicit Entity(Entity const& other) = default;
 
-    protected: OBJECT_ORIENTED_PROGRAMMING_API
-      virtual Entity& operator=(Entity const& other) = default;
+    //REM: [x] III (copy assignment member operator)
+    protected: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+      Entity& operator=(Entity const& other) = default;
 
-    protected: OBJECT_ORIENTED_PROGRAMMING_API
+    //REM: [x] IV (move ctor)
+    protected: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
       explicit Entity(Entity&& other) noexcept = default;
 
-    protected: OBJECT_ORIENTED_PROGRAMMING_API
-      virtual Entity& operator=(Entity&& other) noexcept = default;
+    //REM: [x] V (move assignment member operator)
+    protected: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+      Entity& operator=(Entity&& other) noexcept = default;
 
-    public: OBJECT_ORIENTED_PROGRAMMING_API
+    public: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
       virtual void set_id(std::string const & id);
 
-    public: OBJECT_ORIENTED_PROGRAMMING_API
+    public: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
       virtual char const* get_id() const;
 
     private: std::string m_id;

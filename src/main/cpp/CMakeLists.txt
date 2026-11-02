@@ -53,8 +53,8 @@ if(${project.TARGET_BASENAME_UP}_PACKAGE)
     OPTIONAL
     FILES_MATCHING
     PATTERN "*"
-    PATTERN ".env.example"
-    PATTERN ".env*" EXCLUDE
+    PATTERN ".env.development" EXCLUDE
+    PATTERN ".env.production" EXCLUDE
     PATTERN ".keep" EXCLUDE
     PATTERN ".gitkeep" EXCLUDE)
 endif()

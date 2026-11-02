@@ -8,8 +8,8 @@
 
 namespace j_arb::learn_cpp::object_oriented_programming::utility {
 
-  OBJECT_ORIENTED_PROGRAMMING_API 
-  std::string demangle(char const* mangled_name);
+  OBJECT_ORIENTED_PROGRAMMING_API
+    std::string demangle(char const* mangled_name);
 
   template<typename T>
   std::string get_type_name();

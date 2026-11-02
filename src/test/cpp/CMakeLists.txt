@@ -83,7 +83,7 @@ add_custom_target(
   VERBATIM
   COMMENT "[test](build-time) ${project.TARGET_BASENAME}_resources_test; Update Resource Paths.")
 
-if(${project.TARGET_BASENAME}_PACKAGE)
+if(${project.TARGET_BASENAME_UP}_PACKAGE)
   install(
     DIRECTORY "${project.SRC_TEST_RESOURCES_DIR}/"
     DESTINATION "resources"
@@ -91,8 +91,8 @@ if(${project.TARGET_BASENAME}_PACKAGE)
     OPTIONAL
     FILES_MATCHING
     PATTERN "*"
-    PATTERN ".env.example"
-    PATTERN ".env*" EXCLUDE
+    PATTERN ".env.production" EXCLUDE
+    PATTERN ".env.development" EXCLUDE
     PATTERN ".keep" EXCLUDE
     PATTERN ".gitkeep" EXCLUDE
     REGEX "${project.REGEX_ENTRYPOINT_FILENAME}" EXCLUDE)
