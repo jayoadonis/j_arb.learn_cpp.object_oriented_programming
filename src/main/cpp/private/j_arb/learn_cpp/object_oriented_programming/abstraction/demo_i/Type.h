@@ -25,7 +25,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
   using EType_t = std::underlying_type_t<EType>;
 
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    std::string get_type_cstr(EType const& type);
+    std::string get_type_as_string(EType const& type);
 
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     std::ostream& operator<<(std::ostream& os, EType const& type);
@@ -103,8 +103,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
     public: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
       char const* to_cstr() const;
 
-    private: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-      EType m_e_type;
+    private: EType m_e_type;
 
     public: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
       inline static const EType NONE

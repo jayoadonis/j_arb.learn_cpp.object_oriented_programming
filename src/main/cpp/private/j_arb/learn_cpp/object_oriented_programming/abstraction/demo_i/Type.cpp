@@ -21,7 +21,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
   // };
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-    std::string get_type_cstr(EType const& type)
+    std::string get_type_as_string(EType const& type)
   {
 
     //REM: underlying type with given instance.
@@ -70,7 +70,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
     std::ostream& operator<<(std::ostream& os, EType const& type)
   {
-    return os << get_type_cstr(type);
+    return os << get_type_as_string(type);
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
@@ -100,7 +100,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
     char const* Type::to_cstr() const
   {
-    return get_type_cstr(*this).c_str();
+    return get_type_as_string(*this).c_str();
   }
 
 }
