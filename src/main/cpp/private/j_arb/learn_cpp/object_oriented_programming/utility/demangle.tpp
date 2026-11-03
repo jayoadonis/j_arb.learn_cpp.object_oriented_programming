@@ -8,15 +8,13 @@
 namespace j_arb::learn_cpp::object_oriented_programming::utility {
 
   template<typename T>
-  OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-    std::string get_type_name()
+  inline std::string get_type_name()
   {
     return demangle(typeid(T).name());
   }
 
   template<typename T>
-  OBJECT_ORIENTED_PROGRAMMING_API_INLINE 
-    constexpr std::string_view get_type_name_constexpr()
+  inline constexpr std::string_view get_type_name_constexpr()
   {
   #if defined(__GNUC__) || defined(__clang__)
     constexpr std::string_view sig = __PRETTY_FUNCTION__;
