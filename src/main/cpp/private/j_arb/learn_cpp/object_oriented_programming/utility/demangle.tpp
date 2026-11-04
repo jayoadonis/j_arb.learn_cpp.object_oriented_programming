@@ -2,6 +2,7 @@
 #define J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_UTILITY_DEMANGLE_TPP
 
 #include <string_view>
+#include <typeinfo>
 
 #include "j_arb/learn_cpp/object_oriented_programming/utility/demangle.h"
 
@@ -23,12 +24,12 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility {
     constexpr std::string_view suffix = "]";
 
     auto start = sig.find(marker);
-    if constexpr (start != std::string_view::npos) {
+    if (start != std::string_view::npos) {
       start += marker.length();
     }
     else {
       start = sig.find(alt_marker);
-      if constexpr (start == std::string_view::npos) return sig;
+      if (start == std::string_view::npos) return sig;
       start += alt_marker.length();
     }
     const auto end = sig.find(suffix, start);
