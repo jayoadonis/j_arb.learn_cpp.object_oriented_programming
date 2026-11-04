@@ -59,12 +59,45 @@ namespace j_arb::learn_cpp::object_oriented_programming::inheritance
       std::strcpy(this->m_name_ptr, other.m_name_ptr);
     }
 
-    protected: Player& operator=(Player const& other)
+    protected: Player& operator=(Model const& other) override
     {
-      if (this != &other) {
-        encapsulation::Model::operator=(other);
-        this->set_name(other.m_name_ptr);
+      if (this == &other) return *this;
+
+
+    //   //REM: Dev/Debug mode still at Runtime (MEDIUM FAST)
+    //   //REM: Only Allow exactly 'Player'
+    //   assert(typeid(*this) == typeid(other) && "::: Expected to be 'Player' object.");
+    //   //REM: or
+    // #ifndef NDEBUG
+    //   if (typeid(*this) != typeid(other))
+    //   {
+    //     std::cerr
+    //       << "::: Excepted to be: '" << *this << "', actual: '" << other << "'\n";
+    //     // std::abort(); //REM: crush
+    //     // throw std::bad_cast(); //REM: Loud
+    //     return *this; //REM: Silent
+    //   }
+    // #endif
+    //   Player const* obj = static_cast<Player const*>(&other);
+
+      //REM: ---
+
+      //REM: Or both debug or release mode still at runtime (SLOWER)
+      //REM: Allows 'Player' OR any class derived from 'Player'
+      Player const* obj = dynamic_cast<Player const*>(&other);
+
+      if (obj == nullptr)
+      {
+      #ifndef NDEBUG
+        std::cerr << "::: Mismatch: Expected a Player or Player-derived type, actual: '" << other << "'\n";
+      #endif
+        // throw std::bad_cast(); //REM: Loud
+        return *this; //REM: Silent
       }
+
+      encapsulation::Model::operator=(other);
+      this->set_name(obj->m_name_ptr);
+
       return *this;
     }
 
