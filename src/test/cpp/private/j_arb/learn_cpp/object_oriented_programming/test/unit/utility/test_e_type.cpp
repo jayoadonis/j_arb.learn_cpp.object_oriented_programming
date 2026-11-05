@@ -166,7 +166,48 @@ TEST_CASE("UTILITY E TYPE", "[unit]")
     toggle_item = toggle_item ^ utility::EType::ITEM;
 
     REQUIRE(toggle_item == utility::EType::ITEM);
+  }
 
+  SECTION("CONTAIN")
+  {
+    utility::EType flags_ii 
+      = utility::EType::ITEM | utility::EType::ACTOR;
+    
+    REQUIRE(
+      utility::contain(flags_ii, utility::EType::ITEM)
+      ==
+      utility::EType::ITEM
+    );
+    
+    REQUIRE(
+      utility::contain(flags_ii, utility::EType::ACTOR)
+      ==
+      utility::EType::ACTOR
+    );
+    
+    REQUIRE(
+      utility::contain(flags_ii, utility::EType::ITEM | utility::EType::ACTOR)
+      ==
+      (utility::EType::ITEM | utility::EType::ACTOR)
+    );
+      
+    REQUIRE(
+      utility::contain(flags_ii, utility::EType::NONE)
+      ==
+      utility::EType::NPOS
+    );
+
+    REQUIRE(
+      utility::contain(flags_ii, utility::EType::UNKNOWN)
+      ==
+      utility::EType::NPOS
+    );
+
+    REQUIRE(
+      utility::contain(flags_ii, utility::EType::NONE | utility::EType::ITEM)
+      ==
+      utility::EType::ITEM
+    );
   }
 }
 

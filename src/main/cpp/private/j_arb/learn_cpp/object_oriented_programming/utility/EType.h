@@ -4,6 +4,7 @@
 #include <istream>
 #include <ostream>
 #include <type_traits>
+#include <limits>
 #include <string>
 #include "j_arb/learn_cpp/object_oriented_programming/export.h"
 
@@ -17,7 +18,9 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
     ITEM = 1u << 1u,
     ACTOR = 1u << 2u,
 
-    ALL = (UNKNOWN | ITEM | ACTOR)
+    ALL = (UNKNOWN | ITEM | ACTOR),
+
+    NPOS = std::numeric_limits<unsigned int>::max()
   };
 
   using EType_t = std::underlying_type_t<EType>;
@@ -33,6 +36,9 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     constexpr EType get_e_type_from_string(std::string_view sv);
+
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    EType contain(EType target, EType search);
 
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     std::ostream& operator<<(

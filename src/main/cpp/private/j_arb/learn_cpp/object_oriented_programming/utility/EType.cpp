@@ -9,6 +9,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   {
     switch (e_type)
     {
+    case EType::NPOS:     return "NPOS";
     case EType::ALL:      return "ALL";
     case EType::ACTOR:    return "ACTOR";
     case EType::ITEM:     return "ITEM";
@@ -47,11 +48,26 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
     constexpr EType get_e_type_from_string(
       std::string_view sv
   ) {
+    if (sv == "NPOS") return EType::NPOS;
     if (sv == "ALL") return EType::ALL;
     if (sv == "ACTOR") return EType::ACTOR;
     if (sv == "ITEM")  return EType::ITEM;
     if (sv == "UNKNOWN") return EType::UNKNOWN;
     return EType::NONE;
+  }
+
+  OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+    EType contain(EType target, EType search)
+  {
+    if (search == EType::NPOS
+      || search == EType::NONE) 
+    {
+      return EType::NPOS;
+    }
+
+    return (target & search) == search
+      ? search
+      : EType::NPOS;
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
