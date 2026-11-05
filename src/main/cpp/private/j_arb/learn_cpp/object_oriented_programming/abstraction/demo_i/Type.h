@@ -10,9 +10,7 @@
 namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
 {
 
-  enum class
-    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    EType : unsigned int
+  enum class EType : unsigned int
   {
     NONE = 0u,
     UNKNOWN = 1u << 0u,
@@ -25,13 +23,12 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
   using EType_t = std::underlying_type_t<EType>;
 
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    std::string get_type_as_string(EType const& type);
+    std::string get_type_as_string(EType const& e_type);
 
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    std::ostream& operator<<(std::ostream& os, EType const& type);
+    std::ostream& operator<<(std::ostream& os, EType const& e_type);
 
-  inline OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    EType operator<<(EType lhs, EType rhs)
+  inline EType operator<<(EType lhs, EType rhs)
   {
     return static_cast<EType>(
       static_cast<EType_t>(lhs)
@@ -39,8 +36,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
       );
   }
 
-  inline OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    EType operator>>(EType lhs, EType rhs)
+  inline EType operator>>(EType lhs, EType rhs)
   {
     return static_cast<EType>(
       static_cast<EType_t>(lhs)
@@ -48,8 +44,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
       );
   }
 
-  inline OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    EType operator~(EType e_type)
+  inline EType operator~(EType e_type)
   {
     if (e_type >= EType::ALL) return EType::ALL;
 
@@ -58,19 +53,17 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
       );
   }
 
-  inline OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    EType operator&(
+  inline EType operator&(
       EType const& lhs,
       EType const& rhs)
   {
     return static_cast<EType>(
       static_cast<EType_t>(lhs)
       & static_cast<EType_t>(rhs)
-    );
+      );
   }
 
-  inline OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    EType operator|(EType lhs, EType rhs)
+  inline EType operator|(EType lhs, EType rhs)
   {
     return static_cast<EType>(
       static_cast<EType_t>(lhs) | static_cast<EType_t>(rhs)
@@ -83,8 +76,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
       explicit Type();
     public: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
       explicit Type(EType e_type);
-    public: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-      ~Type() = default;
+    public: ~Type() = default;
 
     public: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
       operator EType() const;
@@ -93,8 +85,8 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
       Type& operator=(EType const& e_type);
 
     //REM: `.contains(unsigned int e_types): unsigned int`
-    public: inline OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-      EType operator[](EType e_type) const
+    public: constexpr EType operator[](
+      EType e_type) const noexcept
     {
       return ((e_type & this->m_e_type) != e_type)
         ? EType::NONE : e_type;
@@ -105,18 +97,10 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
 
     private: EType m_e_type;
 
-    public: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-      inline static const EType NONE
-      = EType::NONE;
-    public: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-      inline static const EType UNKNOWN
-      = EType::UNKNOWN;
-    public: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-      inline static const EType ITEM
-      = EType::ITEM;
-    public: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-      inline static const EType ACTOR
-      = EType::ACTOR;
+    public: static constexpr EType NONE = EType::NONE;
+    public: static constexpr EType UNKNOWN = EType::UNKNOWN;
+    public: static constexpr EType ITEM = EType::ITEM;
+    public: static constexpr EType ACTOR = EType::ACTOR;
   };
 }
 

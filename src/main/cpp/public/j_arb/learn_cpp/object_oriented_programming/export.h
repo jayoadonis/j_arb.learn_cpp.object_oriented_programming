@@ -2,7 +2,7 @@
 #define J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_EXPORT_H
 
 //REM: (Shared-Helper) 
-#if   defined(_WIN32) || defined(WIN32)
+#if defined(_WIN32) || defined(WIN32) || defined(__CYGWIN__)
       //REM: MSVC-style; cl|clang-cl; PE (Shared)
 #     define OBJECT_ORIENTED_PROGRAMMING_EXPORT       __declspec(dllexport)
 #     define OBJECT_ORIENTED_PROGRAMMING_IMPORT       __declspec(dllimport)

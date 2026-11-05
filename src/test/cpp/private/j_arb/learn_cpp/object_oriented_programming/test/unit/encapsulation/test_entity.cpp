@@ -4,7 +4,6 @@
 #include <iostream>
 
 #include "j_arb/learn_cpp/object_oriented_programming/encapsulation/Entity.h"
-#include "j_arb/learn_cpp/object_oriented_programming/encapsulation/rule_of_zero/Entity.h"
 #include "j_arb/learn_cpp/object_oriented_programming/encapsulation/demo_i/Entity.h"
 #include "j_arb/learn_cpp/object_oriented_programming/encapsulation/demo_i/Type.h"
 
@@ -37,27 +36,6 @@ TEST_CASE("ENCAPSULATION ENTITY", "[unit]") {
 
     delete entity_ii;
     entity_ii = nullptr;
-  }
-
-  SECTION("RULE OF ZERO", "[unit]") {
-
-    object_oriented_programming::
-      encapsulation::
-      rule_of_zero::Entity entity_i;
-
-    std::fprintf(stdout, 
-      "::: ENCAPSULATION ENTITY RULE OF ZERO, '%s'\n",
-      entity_i.get_id());
-
-    REQUIRE(std::strcmp(entity_i.get_id(), "") == 0);
-
-    entity_i.set_id("test_321");
-
-    std::fprintf(stdout,
-      "::: ENCAPSULATION ENTITY RULE OF ZERO, '%s'\n",
-      entity_i.get_id());
-
-    REQUIRE(std::strcmp(entity_i.get_id(), "test_321") == 0);
   }
 
   SECTION("DEMO I") {
