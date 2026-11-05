@@ -28,6 +28,12 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
     std::string get_e_type_as_string(EType e_type);
 
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    std::string get_e_type_as_string_dump(EType e_type);
+  
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    constexpr EType get_e_type_from_string(std::string_view sv);
+
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     std::ostream& operator<<(
       std::ostream& os, EType e_type);
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
