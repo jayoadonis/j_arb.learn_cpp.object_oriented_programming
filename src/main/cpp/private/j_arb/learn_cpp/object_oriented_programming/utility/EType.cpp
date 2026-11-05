@@ -58,7 +58,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
     std::ostream& operator<<(
       std::ostream& os, EType e_type)
   {
-    os << get_e_type_as_cstr(e_type);
+    os << get_e_type_as_string(e_type);
     return os;
   }
 
@@ -82,4 +82,34 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
     }
     return is;
   }
+
+  OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+    EType operator|(EType lhs, EType rhs)
+  {
+    return static_cast<EType>(
+      static_cast<EType_t>(lhs) | static_cast<EType_t>(rhs)
+    );
+  }
+  OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+    EType operator&(EType lhs, EType rhs)
+  {
+    return static_cast<EType>(
+      static_cast<EType_t>(lhs) & static_cast<EType_t>(rhs)
+    );
+  }
+  OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+    EType operator^(EType lhs, EType rhs)
+  {
+    return static_cast<EType>(
+      static_cast<EType_t>(lhs) ^ static_cast<EType_t>(rhs)
+    );
+  }
+  OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+    EType operator~(EType e_type)
+  {
+    return static_cast<EType>(
+      ~static_cast<EType_t>(e_type)
+    );
+  }
+
 }

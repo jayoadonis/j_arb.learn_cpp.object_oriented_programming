@@ -92,5 +92,81 @@ TEST_CASE("UTILITY E TYPE", "[unit]")
     REQUIRE(iss_ii.str() == "RANDOM_FLAG");
 
   }
+
+  SECTION("BASIC BITWISE")
+  {
+    utility::EType e_type 
+      = utility::EType::ITEM | utility::EType::ACTOR;
+
+    REQUIRE(
+      e_type 
+      ==
+      (utility::EType::ITEM | utility::EType::ACTOR)
+    );
+    
+    REQUIRE(
+      e_type 
+      !=
+      (utility::EType::UNKNOWN | utility::EType::ACTOR)
+    );
+    
+    utility::EType e_type_ii 
+      = utility::EType::UNKNOWN | utility::EType::ITEM 
+        | utility::EType::ACTOR;
+
+    REQUIRE(
+      e_type_ii
+      ==
+      (utility::EType::UNKNOWN | utility::EType::ITEM | utility::EType::ACTOR)
+    );   
+
+    utility::EType e_type_iii 
+      = utility::EType::ITEM & utility::EType::ACTOR;
+
+    REQUIRE(
+      e_type_iii 
+      ==
+      (utility::EType::ITEM & utility::EType::ACTOR)
+    );
+    
+    REQUIRE(
+      e_type_iii == utility::EType::NONE
+    );
+    
+    REQUIRE(
+      (utility::EType::ITEM & utility::EType::ITEM)
+      ==
+      utility::EType::ITEM
+    );
+    
+    REQUIRE(
+      ((utility::EType::ITEM | utility::EType::ACTOR) 
+      & utility::EType::ACTOR)
+      ==
+      utility::EType::ACTOR
+    );
+
+    REQUIRE(
+      (~utility::EType::NONE)
+      ==
+      static_cast<utility::EType>(-1)
+    );
+
+    //REM: ON (default)
+    utility::EType toggle_item = utility::EType::ITEM;
+
+    REQUIRE(toggle_item == utility::EType::ITEM);
+
+    //REM: OFF
+    toggle_item = toggle_item ^ utility::EType::ITEM;
+    
+    REQUIRE(toggle_item == utility::EType::NONE);
+
+    //REM: ON
+    toggle_item = toggle_item ^ utility::EType::ITEM;
+
+    REQUIRE(toggle_item == utility::EType::ITEM);
+
+  }
 }
 
