@@ -1,7 +1,8 @@
 #ifndef J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_UTILITY_E_TYPE_H
 #define J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_UTILITY_E_TYPE_H
 
-#include <iostream>
+#include <istream>
+#include <ostream>
 #include <type_traits>
 #include <string>
 #include "j_arb/learn_cpp/object_oriented_programming/export.h"

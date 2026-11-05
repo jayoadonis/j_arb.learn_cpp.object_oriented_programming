@@ -14,7 +14,14 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
     case EType::ITEM:     return "ITEM";
     case EType::UNKNOWN:  return "UNKNOWN";
     case EType::NONE:     return "NONE";
-    default:              return "UNION_FLAGS";
+    default:              
+      if (e_type > EType::ALL)
+      {
+        return "OUT_OF_BOUNDS";
+      }
+      else {
+        return "UNION_FLAGS";
+      }
     }
   }
 
