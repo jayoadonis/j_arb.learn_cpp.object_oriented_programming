@@ -29,16 +29,16 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
     public: char const* get_name() const&& noexcept = delete;
     public: char const* get_name() && noexcept = delete;
 
-#   if defined(_MSC_VER)
-#     pragma warning(push)
-#     pragma warning(disable: 4251)
-#   endif
-    //REM: Avoid C4251 (unexported-member),
-    //REM: Suppress warning or use `Pimpl`.
-    // private: std::string m_code_name;
-#   if defined(_MSC_VER)
-#     pragma warning(pop)
-#   endif
+// #   if defined(_MSC_VER)
+// #     pragma warning(push)
+// #     pragma warning(disable: 4251)
+// #   endif
+//     //REM: Avoid C4251 (unexported-member),
+//     //REM: Suppress warning or use `Pimpl`.
+//     // private: std::string m_code_name;
+// #   if defined(_MSC_VER)
+// #     pragma warning(pop)
+// #   endif
     //REM: primitives bypass export warnings
     private: char* m_id_ptr;
     private: char* m_name_ptr;

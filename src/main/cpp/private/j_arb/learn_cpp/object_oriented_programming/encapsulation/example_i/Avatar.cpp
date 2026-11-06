@@ -1,4 +1,3 @@
-#include <iostream>
 #include <cstring>
 #include <string>
 #include <algorithm>
@@ -85,7 +84,6 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
     char const* Avatar::get_id() const& noexcept
   {
-    std::cout << ">>>>> ok" << "\n";
     return this->m_id_ptr;
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE

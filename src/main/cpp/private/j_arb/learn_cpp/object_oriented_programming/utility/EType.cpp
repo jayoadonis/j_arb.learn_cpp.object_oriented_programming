@@ -53,7 +53,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-    constexpr EType get_e_type_from_string(
+    EType get_e_type_from_string(
       std::string_view sv
   ) {
     if (sv == "ALL") return EType::ALL;

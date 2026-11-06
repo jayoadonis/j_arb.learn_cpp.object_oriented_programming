@@ -38,7 +38,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
     std::string get_e_type_as_string_dump(EType e_type);
   
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    constexpr EType get_e_type_from_string(std::string_view sv);
+    EType get_e_type_from_string(std::string_view sv);
 
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     EType contain_e_type(EType target, EType search);

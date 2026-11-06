@@ -26,7 +26,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility {
     {
       std::string result(demangled);
       std::free(demangled);
-      return std::move(result);
+      return result;
     }
     return mangled_name;
   #else

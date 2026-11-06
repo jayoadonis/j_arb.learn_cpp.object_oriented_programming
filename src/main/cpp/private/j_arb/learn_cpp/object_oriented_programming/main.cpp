@@ -3,7 +3,7 @@
 #include <string_view>
 #include "j_arb/learn_cpp/object_oriented_programming/App.h"
 
-int main(int arg_c, char **arg_v) {
+int main(/*int arg_c, char** arg_v*/) {
 
   using namespace j_arb::learn_cpp;
 

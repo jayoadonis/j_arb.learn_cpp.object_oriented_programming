@@ -20,7 +20,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::rule_of_
       std::string_view id, 
       std::string_view code_name
     ) :
-      Model(std::move(std::string(id.data(), id.size())))
+      Model(std::string(id.data(), id.size()))
     {
       this->set_code_name(code_name);
     }
