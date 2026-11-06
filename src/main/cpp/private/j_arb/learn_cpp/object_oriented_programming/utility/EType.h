@@ -59,22 +59,23 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     EType operator~(EType e_type);
 
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    EType& operator|=(EType& lhs, EType rhs);
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    EType& operator&=(EType& lhs, EType rhs);
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    EType& operator^=(EType& lhs, EType rhs);
+  //REM: TODO; COMPOUND OPERATORS
+  // OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+  //   EType& operator|=(EType& lhs, EType rhs);
+  // OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+  //   EType& operator&=(EType& lhs, EType rhs);
+  // OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+  //   EType& operator^=(EType& lhs, EType rhs);
 
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    EType operator<<(EType lhs, EType shift);
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    EType operator>>(EType lhs, EType shift);
-  
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    EType operator<<(EType lhs, unsigned int shift);
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    EType operator>>(EType lhs, unsigned int shift);
+  //REM: TODO; BITWISE SHIFT OPERATORS
+  // OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+  //   EType operator<<(EType lhs, EType shift);
+  // OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+  //   EType operator>>(EType lhs, EType shift);
+  // OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+  //   EType operator<<(EType lhs, unsigned int shift);
+  // OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+  //   EType operator>>(EType lhs, unsigned int shift);
 }
 
 #if defined(OBJECT_ORIENTED_PROGRAMMING_BUILD_HHO)
