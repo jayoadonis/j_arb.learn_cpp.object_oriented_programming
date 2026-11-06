@@ -5,14 +5,114 @@
 #include <iostream>
 #include <iostream>
 #include <sstream>
+#include <string>
 #include <typeinfo>
 #include <string_view>
+#include <algorithm>
 #include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("UTILITY E TYPE", "[unit]")
 {
 
   using namespace j_arb::learn_cpp::object_oriented_programming;
+
+  SECTION("NONE, ALL, NPOS, OUT_OF_BOUNDS, UNION_FLAGS")
+  {
+    //REM: NONE (default) with list-initializer `{}`
+    utility::EType none_flag{};
+    REQUIRE(none_flag == utility::EType::NONE);
+    REQUIRE(
+      static_cast<utility::EType_t>(none_flag) 
+      == 
+      static_cast<utility::EType_t>(0)
+    );
+    std::string name_info 
+      = utility::get_e_type_as_string_dump(none_flag);
+    std::string search = "NONE";
+    REQUIRE(
+      std::search(
+        name_info.begin(), name_info.end(), 
+        search.begin(), search.end()
+      )
+      !=
+      name_info.end()
+    );
+    search = "value=0";
+    REQUIRE(
+      name_info.find(search)
+      !=
+      std::string_view::npos
+    );
+
+    //REM: ALL
+    utility::EType all_flag = utility::EType::ALL;
+    name_info = get_e_type_as_string_dump(all_flag);
+    REQUIRE(all_flag == utility::EType::ALL);
+    REQUIRE(all_flag == (utility::EType::UNKNOWN | utility::EType::ITEM | utility::EType::ACTOR));
+    REQUIRE(
+      name_info.find("ALL") != std::string::npos
+    );
+    search = "value=" 
+      + std::to_string(static_cast<utility::EType_t>(
+        utility::EType::UNKNOWN | 
+        utility::EType::ITEM | 
+        utility::EType::ACTOR
+      ));
+    REQUIRE(
+      name_info.find(search) != std::string::npos
+    );
+
+    //REM: NPOS
+    utility::EType npos_flag = utility::EType::NPOS;
+    name_info = get_e_type_as_string_dump(npos_flag);
+    REQUIRE(
+      npos_flag == utility::EType::NPOS
+    );
+    REQUIRE(
+      name_info.find("NPOS") != std::string::npos
+    );
+    search = "value=" 
+      + std::to_string(std::numeric_limits<utility::EType_t>::max());
+    REQUIRE(
+      name_info.find(search) != std::string::npos
+    );
+
+    //REM: OUT_OF_BOUNDS
+    utility::EType out_of_bounds = static_cast<utility::EType>(
+      static_cast<utility::EType_t>(npos_flag) - 1
+    );
+    REQUIRE(
+      get_e_type_as_string_dump(out_of_bounds).find("OUT_OF_BOUNDS")
+      !=
+      std::string::npos
+    );
+    search = "value="
+      + std::to_string(static_cast<utility::EType_t>(
+        out_of_bounds
+      ));
+    REQUIRE(
+      get_e_type_as_string_dump(out_of_bounds).find(search)
+      !=
+      std::string::npos
+    );
+    
+    //REM: UNION_FLAGS
+    utility::EType union_flags = utility::EType::ITEM | utility::EType::ACTOR;
+    REQUIRE(
+      get_e_type_as_string_dump(union_flags).find("UNION_FLAGS")
+      !=
+      std::string::npos
+    );
+    search = "value="
+      + std::to_string(static_cast<utility::EType_t>(
+        union_flags
+      ));
+    REQUIRE(
+      get_e_type_as_string_dump(union_flags).find(search)
+      !=
+      std::string::npos
+    );
+  }
 
   SECTION("UNDERLYING TYPE")
   {
@@ -91,6 +191,27 @@ TEST_CASE("UTILITY E TYPE", "[unit]")
     REQUIRE(flag_ii == utility::EType::ACTOR);
     REQUIRE(iss_ii.str() == "RANDOM_FLAG");
 
+    iss_ii.clear();
+    iss_ii.str("ITEM ACTOR");
+
+    unsigned int actor_count = 0;
+    unsigned int item_count = 0;
+
+    while(iss_ii >> flag_ii)
+    {
+      if(flag_ii == utility::EType::ACTOR)
+      {
+        actor_count++;
+      }
+      if(flag_ii == utility::EType::ITEM)
+      {
+        item_count++;
+      }
+    }
+
+    REQUIRE(actor_count == 1);
+    REQUIRE(item_count == 1);
+    REQUIRE(iss_ii.eof() == true);
   }
 
   SECTION("BASIC BITWISE")

@@ -5,6 +5,14 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
 {
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+    EType validate_e_type(EType e_type)
+  {
+    return (EType::ALL & e_type) != e_type
+      ? EType::NPOS
+      : e_type;
+  }
+
+  OBJECT_ORIENTED_PROGRAMMING_API_INLINE
     char const* get_e_type_as_cstr(EType e_type)
   {
     switch (e_type)
@@ -48,12 +56,12 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
     constexpr EType get_e_type_from_string(
       std::string_view sv
   ) {
-    if (sv == "NPOS") return EType::NPOS;
     if (sv == "ALL") return EType::ALL;
     if (sv == "ACTOR") return EType::ACTOR;
     if (sv == "ITEM")  return EType::ITEM;
     if (sv == "UNKNOWN") return EType::UNKNOWN;
-    return EType::NONE;
+    if (sv == "NONE") return EType::NONE;
+    return EType::NPOS;
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
@@ -87,7 +95,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
     {
       EType tmp = get_e_type_from_string(token);
 
-      if(tmp == EType::NONE)
+      if(tmp == EType::NONE || tmp == EType::NPOS)
       {
         is.setstate(std::ios::failbit);
       }
