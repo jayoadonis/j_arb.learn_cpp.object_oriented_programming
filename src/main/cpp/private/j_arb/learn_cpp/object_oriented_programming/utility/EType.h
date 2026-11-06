@@ -26,6 +26,9 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   using EType_t = std::underlying_type_t<EType>;
 
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    EType validate_e_type(EType e_type);
+
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     char const * get_e_type_as_cstr(EType e_type);
 
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
@@ -38,7 +41,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
     constexpr EType get_e_type_from_string(std::string_view sv);
 
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-    EType contain(EType target, EType search);
+    EType contain_e_type(EType target, EType search);
 
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     std::ostream& operator<<(

@@ -22,16 +22,16 @@ TEST_CASE("UTILITY E TYPE", "[unit]")
     utility::EType none_flag{};
     REQUIRE(none_flag == utility::EType::NONE);
     REQUIRE(
-      static_cast<utility::EType_t>(none_flag) 
-      == 
+      static_cast<utility::EType_t>(none_flag)
+      ==
       static_cast<utility::EType_t>(0)
     );
-    std::string name_info 
+    std::string name_info
       = utility::get_e_type_as_string_dump(none_flag);
     std::string search = "NONE";
     REQUIRE(
       std::search(
-        name_info.begin(), name_info.end(), 
+        name_info.begin(), name_info.end(),
         search.begin(), search.end()
       )
       !=
@@ -52,12 +52,12 @@ TEST_CASE("UTILITY E TYPE", "[unit]")
     REQUIRE(
       name_info.find("ALL") != std::string::npos
     );
-    search = "value=" 
+    search = "value="
       + std::to_string(static_cast<utility::EType_t>(
-        utility::EType::UNKNOWN | 
-        utility::EType::ITEM | 
+        utility::EType::UNKNOWN |
+        utility::EType::ITEM |
         utility::EType::ACTOR
-      ));
+        ));
     REQUIRE(
       name_info.find(search) != std::string::npos
     );
@@ -71,7 +71,7 @@ TEST_CASE("UTILITY E TYPE", "[unit]")
     REQUIRE(
       name_info.find("NPOS") != std::string::npos
     );
-    search = "value=" 
+    search = "value="
       + std::to_string(std::numeric_limits<utility::EType_t>::max());
     REQUIRE(
       name_info.find(search) != std::string::npos
@@ -80,7 +80,7 @@ TEST_CASE("UTILITY E TYPE", "[unit]")
     //REM: OUT_OF_BOUNDS
     utility::EType out_of_bounds = static_cast<utility::EType>(
       static_cast<utility::EType_t>(npos_flag) - 1
-    );
+      );
     REQUIRE(
       get_e_type_as_string_dump(out_of_bounds).find("OUT_OF_BOUNDS")
       !=
@@ -89,13 +89,13 @@ TEST_CASE("UTILITY E TYPE", "[unit]")
     search = "value="
       + std::to_string(static_cast<utility::EType_t>(
         out_of_bounds
-      ));
+        ));
     REQUIRE(
       get_e_type_as_string_dump(out_of_bounds).find(search)
       !=
       std::string::npos
     );
-    
+
     //REM: UNION_FLAGS
     utility::EType union_flags = utility::EType::ITEM | utility::EType::ACTOR;
     REQUIRE(
@@ -106,7 +106,7 @@ TEST_CASE("UTILITY E TYPE", "[unit]")
     search = "value="
       + std::to_string(static_cast<utility::EType_t>(
         union_flags
-      ));
+        ));
     REQUIRE(
       get_e_type_as_string_dump(union_flags).find(search)
       !=
@@ -141,8 +141,8 @@ TEST_CASE("UTILITY E TYPE", "[unit]")
     utility::EType e_type = utility::EType::UNKNOWN;
 
     REQUIRE(
-      static_cast<utility::EType_t>(e_type) 
-      == 
+      static_cast<utility::EType_t>(e_type)
+      ==
       static_cast<utility::EType_t>(1)
     );
   }
@@ -183,7 +183,7 @@ TEST_CASE("UTILITY E TYPE", "[unit]")
     REQUIRE(iss.str() == "");
 
     std::istringstream iss_ii("RANDOM_FLAG");
-    utility::EType flag_ii = utility::EType::ACTOR; 
+    utility::EType flag_ii = utility::EType::ACTOR;
 
     iss_ii >> flag_ii;
 
@@ -197,13 +197,13 @@ TEST_CASE("UTILITY E TYPE", "[unit]")
     unsigned int actor_count = 0;
     unsigned int item_count = 0;
 
-    while(iss_ii >> flag_ii)
+    while (iss_ii >> flag_ii)
     {
-      if(flag_ii == utility::EType::ACTOR)
+      if (flag_ii == utility::EType::ACTOR)
       {
         actor_count++;
       }
-      if(flag_ii == utility::EType::ITEM)
+      if (flag_ii == utility::EType::ITEM)
       {
         item_count++;
       }
@@ -216,53 +216,53 @@ TEST_CASE("UTILITY E TYPE", "[unit]")
 
   SECTION("BASIC BITWISE")
   {
-    utility::EType e_type 
+    utility::EType e_type
       = utility::EType::ITEM | utility::EType::ACTOR;
 
     REQUIRE(
-      e_type 
+      e_type
       ==
       (utility::EType::ITEM | utility::EType::ACTOR)
     );
-    
+
     REQUIRE(
-      e_type 
+      e_type
       !=
       (utility::EType::UNKNOWN | utility::EType::ACTOR)
     );
-    
-    utility::EType e_type_ii 
-      = utility::EType::UNKNOWN | utility::EType::ITEM 
-        | utility::EType::ACTOR;
+
+    utility::EType e_type_ii
+      = utility::EType::UNKNOWN | utility::EType::ITEM
+      | utility::EType::ACTOR;
 
     REQUIRE(
       e_type_ii
       ==
       (utility::EType::UNKNOWN | utility::EType::ITEM | utility::EType::ACTOR)
-    );   
+    );
 
-    utility::EType e_type_iii 
+    utility::EType e_type_iii
       = utility::EType::ITEM & utility::EType::ACTOR;
 
     REQUIRE(
-      e_type_iii 
+      e_type_iii
       ==
       (utility::EType::ITEM & utility::EType::ACTOR)
     );
-    
+
     REQUIRE(
       e_type_iii == utility::EType::NONE
     );
-    
+
     REQUIRE(
       (utility::EType::ITEM & utility::EType::ITEM)
       ==
       utility::EType::ITEM
     );
-    
+
     REQUIRE(
-      ((utility::EType::ITEM | utility::EType::ACTOR) 
-      & utility::EType::ACTOR)
+      ((utility::EType::ITEM | utility::EType::ACTOR)
+        & utility::EType::ACTOR)
       ==
       utility::EType::ACTOR
     );
@@ -280,7 +280,7 @@ TEST_CASE("UTILITY E TYPE", "[unit]")
 
     //REM: OFF
     toggle_item = toggle_item ^ utility::EType::ITEM;
-    
+
     REQUIRE(toggle_item == utility::EType::NONE);
 
     //REM: ON
@@ -291,43 +291,99 @@ TEST_CASE("UTILITY E TYPE", "[unit]")
 
   SECTION("CONTAIN")
   {
-    utility::EType flags_ii 
+    utility::EType flags_ii
       = utility::EType::ITEM | utility::EType::ACTOR;
-    
+
     REQUIRE(
-      utility::contain(flags_ii, utility::EType::ITEM)
+      utility::contain_e_type(flags_ii, utility::EType::ITEM)
       ==
       utility::EType::ITEM
     );
-    
+
     REQUIRE(
-      utility::contain(flags_ii, utility::EType::ACTOR)
+      utility::contain_e_type(flags_ii, utility::EType::ACTOR)
       ==
       utility::EType::ACTOR
     );
-    
+
     REQUIRE(
-      utility::contain(flags_ii, utility::EType::ITEM | utility::EType::ACTOR)
+      utility::contain_e_type(flags_ii, utility::EType::ITEM | utility::EType::ACTOR)
       ==
       (utility::EType::ITEM | utility::EType::ACTOR)
     );
-      
+
     REQUIRE(
-      utility::contain(flags_ii, utility::EType::NONE)
+      utility::contain_e_type(flags_ii, utility::EType::NONE)
       ==
       utility::EType::NPOS
     );
 
     REQUIRE(
-      utility::contain(flags_ii, utility::EType::UNKNOWN)
+      utility::contain_e_type(flags_ii, utility::EType::UNKNOWN)
       ==
       utility::EType::NPOS
     );
 
     REQUIRE(
-      utility::contain(flags_ii, utility::EType::NONE | utility::EType::ITEM)
+      utility::contain_e_type(flags_ii, utility::EType::NONE | utility::EType::ITEM)
       ==
       utility::EType::ITEM
+    );
+  }
+
+  SECTION("VALIDATE")
+  {
+    utility::EType e_type{};
+
+    REQUIRE(
+      utility::validate_e_type(e_type)
+      ==
+      utility::EType::NONE
+    );
+
+    e_type = utility::EType::NONE;
+
+    REQUIRE(
+      utility::validate_e_type(e_type)
+      ==
+      utility::EType::NONE
+    );
+
+    e_type = utility::EType::ACTOR;
+
+    REQUIRE(
+      utility::validate_e_type(e_type)
+      ==
+      utility::EType::ACTOR
+    );
+
+    e_type = utility::EType::ITEM | utility::EType::ACTOR;
+
+    REQUIRE(
+      utility::validate_e_type(e_type)
+      ==
+      (utility::EType::ACTOR | utility::EType::ITEM)
+    );
+
+    utility::EType fake_flag = static_cast<utility::EType>(
+      static_cast<utility::EType_t>(utility::EType::ALL) + 1
+      );
+
+    REQUIRE(
+      utility::validate_e_type(fake_flag)
+      ==
+      utility::EType::NPOS
+    );
+
+    utility::EType fake_mixed_flag
+      = static_cast<utility::EType>(
+        static_cast<utility::EType_t>(utility::EType::ALL) + 1
+        ) | utility::EType::ITEM;
+
+    REQUIRE(
+      utility::validate_e_type(fake_mixed_flag)
+      ==
+      utility::EType::NPOS
     );
   }
 }

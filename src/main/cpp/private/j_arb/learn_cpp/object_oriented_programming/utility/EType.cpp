@@ -65,7 +65,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-    EType contain(EType target, EType search)
+    EType contain_e_type(EType target, EType search)
   {
     if (search == EType::NPOS
       || search == EType::NONE) 
