@@ -7,41 +7,32 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation {
 
   class Entity {
 
-    public:
-    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-      explicit Entity();
+    public: explicit OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+      Entity();
 
-    public:
-    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-      virtual ~Entity();
+    public: virtual OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+      ~Entity();
 
-    public:
-    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-      virtual Entity* clone() const;
+    public: virtual OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+      Entity* clone() const;
 
-    protected:
-    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-      explicit Entity(Entity const& entity);
+    protected: explicit OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+      Entity(Entity const& entity);
 
-    protected:
-    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-      Entity& operator=(Entity const& entity);
+    protected: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL Entity&
+      operator=(Entity const& entity);
 
-    protected:
-    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-      explicit Entity(Entity&& entity) noexcept;
+    protected: explicit OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+      Entity(Entity&& entity) noexcept;
 
-    protected:
-    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-      Entity& operator=(Entity&& entity) noexcept;
+    protected: OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL Entity&
+      operator=(Entity&& entity) noexcept;
 
-    public:
-    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-      virtual void set_id(char const* id);
+    public: virtual OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+      void set_id(char const* id);
 
-    public:
-    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
-      virtual char const* get_id() const;
+    public: virtual OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+      char const* get_id() const;
 
     private: char* m_id_ptr;
   };

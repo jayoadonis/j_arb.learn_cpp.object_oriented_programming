@@ -73,10 +73,21 @@ target_compile_options(
   INTERFACE
   $<$<CXX_COMPILER_ID:MSVC>:
   /W4;/permissive-;/utf-8;
-  $<$<BOOL:${${project.TARGET_BASENAME_UP}_BUILD_WAE}>:/WX>>
+  $<$<BOOL:${${project.TARGET_BASENAME_UP}_BUILD_WAE}>:/WX>;
+
+  #REM: TODO; MSVC (ASan) & (USan)
+  # $<$<BOOL:${${project.TARGET_BASENAME_UP}_BUILD_TESTING}>:/fsanitize=address;/Zi>
+  >
   $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:
   -Wall;-Wpedantic;-Wshadow;-Wnon-virtual-dtor;
-  $<$<BOOL:${${project.TARGET_BASENAME_UP}_BUILD_WAE}>:-Werror>>)
+  $<$<BOOL:${${project.TARGET_BASENAME_UP}_BUILD_WAE}>:-Werror>;
+
+  # # REM: TODO; Fix the corresponding compiler options flag to
+  # # REM: have non-MSVC (ASan) & (UBSan) such as `MingGW`,
+  # # REM: `MSYS2`, `UCRT64` or others...
+  # $<$<BOOL:${${project.TARGET_BASENAME_UP}_BUILD_TESTING}>:-fsanitize=undefined;-fsanitize-undefined-trap-on-error>
+  >
+)
 
 if(${project.TARGET_BASENAME_UP}_BUILD_TESTING)
   target_compile_definitions(
@@ -84,6 +95,18 @@ if(${project.TARGET_BASENAME_UP}_BUILD_TESTING)
     INTERFACE
     ${project.TARGET_BASENAME_UP}_BUILD_TESTING
     _CRT_SECURE_NO_WARNINGS)
+
+  # REM: TODO; MSVC/non-MSVC (ASan) & (UBSan)
+  # target_link_options(
+  # ${project.TARGET_BASENAME}_common
+  # INTERFACE
+  # $<$<CXX_COMPILER_ID:MSVC>:/DEBUG;/INCREMENTAL:NO>;
+
+  # # REM: TODO; Fix the corresponding compiler-linker to
+  # # REM: have (ASan) & (UBSan) such as `MingGW`,
+  # # REM: `MSYS2`, `UCRT64` or others...
+  # # $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-fsanitize=address;-fsanitize=undefined;-fsanitize-undefined-trap-on-error>
+  # )
 endif()
 
 # REM: [x]; core_private INTERFACE

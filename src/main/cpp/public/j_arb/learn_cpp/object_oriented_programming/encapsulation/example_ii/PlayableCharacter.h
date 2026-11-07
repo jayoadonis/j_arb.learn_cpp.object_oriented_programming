@@ -7,27 +7,27 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
 {
   class PlayableCharacter
   {
-    public: OBJECT_ORIENTED_PROGRAMMING_API
-      explicit PlayableCharacter();
-    public: OBJECT_ORIENTED_PROGRAMMING_API
-      virtual ~PlayableCharacter();
+    public: explicit OBJECT_ORIENTED_PROGRAMMING_API 
+      PlayableCharacter();
+    public: virtual OBJECT_ORIENTED_PROGRAMMING_API 
+      ~PlayableCharacter();
 
-    public: OBJECT_ORIENTED_PROGRAMMING_API
-      explicit PlayableCharacter(
+    public: explicit OBJECT_ORIENTED_PROGRAMMING_API 
+      PlayableCharacter(
         char const* id_ptr, char const* name_ptr
       );
 
-    public: OBJECT_ORIENTED_PROGRAMMING_API
-      virtual void set_id(char const* id_ptr);
-    public: OBJECT_ORIENTED_PROGRAMMING_API
-      virtual char const* get_id() const& noexcept;
+    public: virtual OBJECT_ORIENTED_PROGRAMMING_API 
+      void set_id(char const* id_ptr);
+    public: virtual OBJECT_ORIENTED_PROGRAMMING_API 
+      char const* get_id() const& noexcept;
     public: char const* get_id() const&& noexcept = delete;
     public: char const* get_id() && noexcept = delete;
 
-    public: OBJECT_ORIENTED_PROGRAMMING_API
-      virtual void set_name(char const* name_ptr);
-    public: OBJECT_ORIENTED_PROGRAMMING_API
-      virtual char const* get_name() const& noexcept;
+    public: virtual OBJECT_ORIENTED_PROGRAMMING_API 
+      void set_name(char const* name_ptr);
+    public: virtual OBJECT_ORIENTED_PROGRAMMING_API 
+      char const* get_name() const& noexcept;
     public: char const* get_name() const&& noexcept = delete;
     public: char const* get_name() && noexcept = delete;
 

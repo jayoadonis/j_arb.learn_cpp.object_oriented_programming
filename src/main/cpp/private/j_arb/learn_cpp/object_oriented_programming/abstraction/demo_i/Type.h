@@ -54,8 +54,8 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
   }
 
   constexpr EType operator&(
-      EType const& lhs,
-      EType const& rhs) noexcept
+    EType const& lhs,
+    EType const& rhs) noexcept
   {
     return static_cast<EType>(
       static_cast<EType_t>(lhs)
