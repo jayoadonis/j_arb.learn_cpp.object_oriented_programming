@@ -1,3 +1,5 @@
+
+#include <string_view>
 #include <catch2/catch_test_macros.hpp>
 #include "j_arb/learn_cpp/object_oriented_programming/encapsulation/example_ii/PlayableCharacter.h"
 
@@ -77,5 +79,50 @@ TEST_CASE(
       std::string_view(p_char.get_name())
       == "code_name_iii"
     );
+  }
+
+  SECTION("CLONE COPY_AND_MOVE")
+  {
+    example_ii::PlayableCharacter p_char;
+
+    p_char.set_id("ID_0");
+
+    std::unique_ptr<example_ii::PlayableCharacter> 
+      p_char_copy_ptr = p_char.clone();
+
+    p_char_copy_ptr->set_id("ID_1");
+
+    REQUIRE(std::string_view(p_char.get_id()) == "ID_0");
+    REQUIRE(
+      std::string_view(p_char_copy_ptr->get_id()) == "ID_1"
+    );
+
+    std::unique_ptr<example_ii::PlayableCharacter> 
+      p_char_move_uptr = std::move(*p_char_copy_ptr).clone();
+
+    REQUIRE(
+      std::string_view(p_char_copy_ptr->get_id()) == "N/a"
+    );
+    REQUIRE(
+      std::string_view(p_char_move_uptr->get_id()) == "ID_1"
+    );
+
+    p_char_move_uptr->set_id("ID_3");
+
+    REQUIRE(
+      std::string_view(p_char_copy_ptr->get_id()) == "N/a"
+    );
+    REQUIRE(
+      std::string_view(p_char_move_uptr->get_id()) == "ID_3"
+    );
+
+    std::unique_ptr<example_ii::PlayableCharacter> 
+      p_char_move_ii_uptr 
+        = example_ii::PlayableCharacter().clone();
+    
+    REQUIRE(
+      std::string_view(p_char_move_ii_uptr->get_id()) == "N/a"
+    );
+
   }
 }
