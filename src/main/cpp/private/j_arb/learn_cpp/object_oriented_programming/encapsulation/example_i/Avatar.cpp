@@ -7,10 +7,12 @@
 namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_i
 {
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     Avatar::Avatar() : Avatar(nullptr, nullptr)
   {
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     Avatar::Avatar(
       char const* id_ptr, char const* name_ptr
     ) : m_id_ptr(nullptr), m_name_ptr(nullptr)
@@ -19,17 +21,20 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
     this->set_name(name_ptr);
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     Avatar::~Avatar()
   {
     delete[] this->m_id_ptr;
     delete[] this->m_name_ptr;
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     Avatar::Avatar(Avatar const& other) :
     Avatar(other.get_id(), other.get_name())
   {
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     Avatar::Avatar(Avatar&& other) noexcept :
     m_id_ptr(other.m_id_ptr),
     m_name_ptr(other.m_name_ptr)
@@ -38,6 +43,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
     other.m_name_ptr = nullptr;
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     Avatar& Avatar::operator=(Avatar const& other)
   {
     if (this == &other) return *this;
@@ -46,6 +52,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
     return *this;
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     Avatar& Avatar::operator=(Avatar&& other) noexcept
   {
     if (this == &other) return *this;
@@ -61,6 +68,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
     return *this;
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     void Avatar::set_id(char const* id_ptr)
   {
     if (id_ptr == nullptr) return;
@@ -82,11 +90,13 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
     this->m_id_ptr = new_buff;
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     char const* Avatar::get_id() const& noexcept
   {
     return this->m_id_ptr;
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     void Avatar::set_name(char const* name_ptr)
   {
     if (name_ptr == nullptr) return;
@@ -108,6 +118,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
     this->m_name_ptr = new_buff;
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     char const* Avatar::get_name() const& noexcept
   {
     return this->m_name_ptr;

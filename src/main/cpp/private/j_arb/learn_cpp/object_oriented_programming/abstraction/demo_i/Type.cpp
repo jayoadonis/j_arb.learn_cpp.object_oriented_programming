@@ -12,6 +12,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
   //REM: Note external testing/Usage will not work with it,
   //REM: even if you have a forward declaration.
   // OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  // OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
   //   enum class EType : unsigned int
   // {
   //   UNKNOWN = 1u,
@@ -21,6 +22,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
   // };
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     std::string get_type_as_string(EType const& type)
   {
 
@@ -68,23 +70,27 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     std::ostream& operator<<(std::ostream& os, EType const& type)
   {
     return os << get_type_as_string(type);
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     Type::Type() : Type(EType::UNKNOWN)
   {
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     Type::Type(EType e_type) :
     m_e_type(e_type)
   {
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     Type& Type::operator=(EType const& e_type)
   {
     this->m_e_type = e_type;
@@ -92,12 +98,14 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     Type::operator EType() const
   {
     return this->m_e_type;
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     char const* Type::to_cstr() const
   {
     return get_type_as_string(*this).c_str();

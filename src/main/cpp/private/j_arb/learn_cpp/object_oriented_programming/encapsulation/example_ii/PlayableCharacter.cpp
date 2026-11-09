@@ -8,12 +8,14 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
 {
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     PlayableCharacter::PlayableCharacter()
     : PlayableCharacter(nullptr, nullptr)
   {
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     PlayableCharacter::~PlayableCharacter()
   {
     delete[] this->m_id_ptr;
@@ -21,6 +23,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     PlayableCharacter::PlayableCharacter(
       char const* id_ptr, char const* name_ptr
     ) : m_id_ptr(nullptr), m_name_ptr(nullptr)
@@ -30,6 +33,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     PlayableCharacter::PlayableCharacter(
       PlayableCharacter const& other
     ) : PlayableCharacter(other.get_id(), other.get_name())
@@ -37,6 +41,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     PlayableCharacter::PlayableCharacter(
       PlayableCharacter&& other
     ) noexcept :
@@ -48,6 +53,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     PlayableCharacter& PlayableCharacter::operator=
     (PlayableCharacter const& other)
   {
@@ -58,6 +64,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     PlayableCharacter& PlayableCharacter::operator=
     (PlayableCharacter&& other) noexcept
   {
@@ -75,6 +82,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     void PlayableCharacter::set_id(char const* id_ptr)
   {
     // if (id_ptr == nullptr) id_ptr = "N/a";
@@ -99,6 +107,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     char const* PlayableCharacter::get_id() const& noexcept
   {
     return this->m_id_ptr
@@ -106,6 +115,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     void PlayableCharacter::set_name(char const* name_ptr)
   {
     // if(name_ptr == nullptr) name_ptr = "N/a";
@@ -131,6 +141,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     char const* PlayableCharacter::get_name() const& noexcept
   {
     return this->m_name_ptr
@@ -138,6 +149,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     std::unique_ptr<PlayableCharacter>
     PlayableCharacter::clone() const&
   {
@@ -147,6 +159,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API
     std::unique_ptr<PlayableCharacter>
     PlayableCharacter::clone() &&
   {

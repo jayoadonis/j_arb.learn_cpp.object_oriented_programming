@@ -5,6 +5,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
 {
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     EType validate_e_type(EType e_type)
   {
     return (EType::ALL & e_type) != e_type
@@ -13,6 +14,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     char const* get_e_type_as_cstr(EType e_type)
   {
     switch (e_type)
@@ -35,6 +37,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     std::string get_e_type_as_string(EType e_type)
   {
     EType_t const t = static_cast<EType_t>(e_type);
@@ -44,6 +47,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     std::string get_e_type_as_string_dump(EType e_type)
   {
     EType_t const t = static_cast<EType_t>(e_type);
@@ -53,6 +57,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     EType get_e_type_from_string(
       std::string_view sv
   ) {
@@ -65,6 +70,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     EType contain_e_type(EType target, EType search)
   {
     if (search == EType::NPOS
@@ -79,6 +85,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     std::ostream& operator<<(
       std::ostream& os, EType e_type)
   {
@@ -87,6 +94,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     std::istream& operator>>(
       std::istream& is, EType& e_type)
   {
@@ -108,6 +116,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     EType operator|(EType lhs, EType rhs)
   {
     return static_cast<EType>(
@@ -115,6 +124,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
     );
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     EType operator&(EType lhs, EType rhs)
   {
     return static_cast<EType>(
@@ -122,6 +132,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
     );
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     EType operator^(EType lhs, EType rhs)
   {
     return static_cast<EType>(
@@ -129,6 +140,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
     );
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     EType operator~(EType e_type)
   {
     return static_cast<EType>(

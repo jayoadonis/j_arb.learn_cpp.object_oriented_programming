@@ -23,6 +23,9 @@ namespace j_arb::learn_cpp::object_oriented_programming {
   private:
     std::string m_title;
   };
+
+  OBJECT_ORIENTED_PROGRAMMING_API
+  void func_app(int arg_c, char** arg_v);
 }
 
 #if defined(OBJECT_ORIENTED_PROGRAMMING_BUILD_HHO)

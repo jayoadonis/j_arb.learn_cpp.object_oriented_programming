@@ -89,12 +89,17 @@ target_compile_options(
   >
 )
 
+target_compile_definitions(
+  ${project.TARGET_BASENAME}_common
+  INTERFACE
+  #REM: Ignore `C RUNTIME LIBRARY` deprecation warnings
+  _CRT_SECURE_NO_WARNINGS)
+
 if(${project.TARGET_BASENAME_UP}_BUILD_TESTING)
   target_compile_definitions(
     ${project.TARGET_BASENAME}_common
     INTERFACE
-    ${project.TARGET_BASENAME_UP}_BUILD_TESTING
-    _CRT_SECURE_NO_WARNINGS)
+    ${project.TARGET_BASENAME_UP}_BUILD_TESTING)
 
   # REM: TODO; MSVC/non-MSVC (ASan) & (UBSan)
   # target_link_options(
