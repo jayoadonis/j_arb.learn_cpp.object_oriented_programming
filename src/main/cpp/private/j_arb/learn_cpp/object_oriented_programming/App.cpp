@@ -7,34 +7,47 @@
 namespace j_arb::learn_cpp::object_oriented_programming {
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API   
-    App::App() : m_title("N/a") 
+    OBJECT_ORIENTED_PROGRAMMING_API
+    App::App() : m_title("N/a")
   {
+
+    // int max_val = std::numeric_limits<int>::max();
+    // //REM: UB (signed-integer-overflow)
+    // int overflowed = max_val + 1;
+    // (void)overflowed;
+
+    // int* x = new int(1);
+    // delete x;
+    // //REM: Address HEAP (use-after-free)
+    // //REM: Using volatile (REQUIRED) prevents the compiler from 
+    // //REM: optimizing the read away.
+    // int volatile y = *x;
+    // (void)y;
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API   
+    OBJECT_ORIENTED_PROGRAMMING_API
     App::~App() = default;
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API   
-    void App::set_title(std::string const& title) 
+    OBJECT_ORIENTED_PROGRAMMING_API
+    void App::set_title(std::string const& title)
   {
     this->set_title(title.c_str());
   }
-  
+
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API   
-    void App::set_title(char const* title) 
+    OBJECT_ORIENTED_PROGRAMMING_API
+    void App::set_title(char const* title)
   {
     this->m_title = title;
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API   
-    std::string App::get_title() const 
+    OBJECT_ORIENTED_PROGRAMMING_API
+    std::string App::get_title() const
   {
-    
+
     object_oriented_programming::encapsulation::
       example_ii::PlayableCharacter p_char;
 
@@ -45,14 +58,14 @@ namespace j_arb::learn_cpp::object_oriented_programming {
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API
-  void func_app(int arg_c, char** arg_v)
+    OBJECT_ORIENTED_PROGRAMMING_API
+    void func_app(int arg_c, char** arg_v)
   {
     std::cout << "<3> " << arg_c << "\n";
     std::cout << "<3> " << (
-      arg_v 
-        ? arg_v[0] ? arg_v[0] : "--nope--" 
-        : "--none--"
-    ) << "\n";
+      arg_v
+      ? arg_v[0] ? arg_v[0] : "--nope--"
+      : "--none--"
+      ) << "\n";
   }
 }

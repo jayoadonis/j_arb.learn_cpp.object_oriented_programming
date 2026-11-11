@@ -1,6 +1,7 @@
-cmake_minimum_required(VERSION 3.25...3.30)
+cmake_minimum_required(VERSION 3.28)
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/LoadThatEnv.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/Sanitizers.cmake")
 
 load_that_env("${CMAKE_CURRENT_SOURCE_DIR}/.env.root")
 
@@ -28,14 +29,15 @@ string(TOLOWER "${project.TARGET_BASENAME}"
 string(REGEX REPLACE "[ -]+" "_"
   project.TARGET_BASENAME "${project.TARGET_BASENAME}")
 
-string(TOUPPER "${project.TARGET_BASENAME}" 
+string(TOUPPER "${project.TARGET_BASENAME}"
   project.TARGET_BASENAME_UP)
 
 set(project.CXX_STD "cxx_std_17")
-set(project.REGEX_ENTRYPOINT_FILENAME 
+set(project.REGEX_ENTRYPOINT_FILENAME
   ".*/main\\.(cc|cxx|cpp)$")
 
 if(WIN32)
+  set(project.PATH_SEP ";")
   set(project.REGEX_SYSTEM_PRECOMPILED_RUNTIME_DEPENDENCIES
     "^ext-ms-.*\\.dll"
     "^[Kk][Ee][Rr][Nn][Ee][Ll]32\\.dll"
@@ -45,6 +47,8 @@ if(WIN32)
     "^[Vv][Cc][Rr][Uu][Nn][Tt][Ii][Mm][Ee]140.*\\.dll"
     "^[Uu][Cc][Rr][Tt][Bb][Aa][Ss][Ee][Dd].*\\.dll")
 else()
+  set(project.PATH_SEP ":")
+
   if(APPLE)
     set(project.RPATH "@loader_path")
   else()
@@ -89,6 +93,25 @@ option(${project.TARGET_BASENAME_UP}_PACKAGE
 option(${project.TARGET_BASENAME_UP}_FETCHCONTENT
   "Fetch Content for external libraries" OFF)
 
+get_filename_component(
+  project.CXX_COMPILER_DIR "${CMAKE_CXX_COMPILER}" DIRECTORY)
+
+set(project.ASAN_BASE_OPTS "color=always:abort_on_error=1")
+set(project.UBSAN_BASE_OPTS "print_stacktrace=1:color=always:halt_on_error=1")
+
+if(NOT WIN32)
+  string(APPEND project.ASAN_BASE_OPTS ":detect_leaks=1")
+endif()
+
+set(project.TEST_ENV_VARS
+  "ASAN_OPTIONS=${project.ASAN_BASE_OPTS}"
+  "UBSAN_OPTIONS=${project.UBSAN_BASE_OPTS}")
+
+if(WIN32)
+  list(APPEND project.TEST_ENV_VARS
+    "PATH=${project.CXX_COMPILER_DIR}${project.PATH_SEP}$ENV{PATH}")
+endif()
+
 add_subdirectory("src/main/cpp")
 
 if(${project.TARGET_BASENAME_UP}_BUILD_TESTING)
@@ -98,7 +121,6 @@ if(${project.TARGET_BASENAME_UP}_BUILD_TESTING)
 endif()
 
 if(${project.TARGET_BASENAME_UP}_PACKAGE)
-  
   set(CPACK_VERBATIM_VARIABLES ON)
 
   set(CPACK_PACKAGE_VENDOR "${project.GROUP}")
@@ -108,17 +130,19 @@ if(${project.TARGET_BASENAME_UP}_PACKAGE)
   set(CPACK_PACKAGE_HOMEPAGE_URL "${PROJECT_HOMEPAGE_URL}")
 
   # set(CPACK_RESOURCE_FILE_LICENSE
-  #   "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt")
+  # "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt")
 
-  #REM: Final output name in user space
+  # REM: Final output name in user space
   set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}")
 
   set(CPACK_GENERATOR "ZIP;TGZ")
-  #REM: Enable filtering "Separation" for ARCHIVE; `-DCPACK_COMPONENTS_ALL="..."`
+
+  # REM: Enable filtering "Separation" for ARCHIVE; `-DCPACK_COMPONENTS_ALL="..."`
   set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
-  #REM: Override the "Seperation" into "Monolith", however,
-  #REM: the filtering `-DCPACK_COMPONENTS_ALL="..."` still active,
-  #REM: assuming `CPACK_COMPONENT_INSTALL ON`
+
+  # REM: Override the "Seperation" into "Monolith", however,
+  # REM: the filtering `-DCPACK_COMPONENTS_ALL="..."` still active,
+  # REM: assuming `CPACK_COMPONENT_INSTALL ON`
   set(CPACK_COMPONENTS_GROUPING "ALL_COMPONENTS_IN_ONE")
 
   if(WIN32)
@@ -135,7 +159,6 @@ if(${project.TARGET_BASENAME_UP}_PACKAGE)
   else()
     message(WARNING "CPack, unknown OS")
   endif()
-  
-  include(CPack)
 
+  include(CPack)
 endif()

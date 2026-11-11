@@ -72,27 +72,26 @@ target_compile_options(
   ${project.TARGET_BASENAME}_common
   INTERFACE
   $<$<CXX_COMPILER_ID:MSVC>:
-  /W4;/permissive-;/utf-8;
-  $<$<BOOL:${${project.TARGET_BASENAME_UP}_BUILD_WAE}>:/WX>;
-
-  #REM: TODO; MSVC (ASan) & (USan)
-  # $<$<BOOL:${${project.TARGET_BASENAME_UP}_BUILD_TESTING}>:/fsanitize=address;/Zi>
+  /W4
+  /permissive-
+  /utf-8
+  $<$<BOOL:${${project.TARGET_BASENAME_UP}_BUILD_WAE}>:/WX>
   >
   $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:
-  -Wall;-Wpedantic;-Wshadow;-Wnon-virtual-dtor;
-  $<$<BOOL:${${project.TARGET_BASENAME_UP}_BUILD_WAE}>:-Werror>;
-
-  # # REM: TODO; Fix the corresponding compiler options flag to
-  # # REM: have non-MSVC (ASan) & (UBSan) such as `MingGW`,
-  # # REM: `MSYS2`, `UCRT64` or others...
-  # $<$<BOOL:${${project.TARGET_BASENAME_UP}_BUILD_TESTING}>:-fsanitize=undefined;-fsanitize-undefined-trap-on-error>
+  -Wall
+  -Wextra
+  -Wpedantic
+  -Wshadow
+  -Wnon-virtual-dtor
+  $<$<BOOL:${${project.TARGET_BASENAME_UP}_BUILD_WAE}>:-Werror>
   >
 )
 
 target_compile_definitions(
   ${project.TARGET_BASENAME}_common
   INTERFACE
-  #REM: Ignore `C RUNTIME LIBRARY` deprecation warnings
+
+  # REM: Ignore `C RUNTIME LIBRARY` deprecation warnings
   _CRT_SECURE_NO_WARNINGS)
 
 if(${project.TARGET_BASENAME_UP}_BUILD_TESTING)
@@ -100,18 +99,6 @@ if(${project.TARGET_BASENAME_UP}_BUILD_TESTING)
     ${project.TARGET_BASENAME}_common
     INTERFACE
     ${project.TARGET_BASENAME_UP}_BUILD_TESTING)
-
-  # REM: TODO; MSVC/non-MSVC (ASan) & (UBSan)
-  # target_link_options(
-  # ${project.TARGET_BASENAME}_common
-  # INTERFACE
-  # $<$<CXX_COMPILER_ID:MSVC>:/DEBUG;/INCREMENTAL:NO>;
-
-  # # REM: TODO; Fix the corresponding compiler-linker to
-  # # REM: have (ASan) & (UBSan) such as `MingGW`,
-  # # REM: `MSYS2`, `UCRT64` or others...
-  # # $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-fsanitize=address;-fsanitize=undefined;-fsanitize-undefined-trap-on-error>
-  # )
 endif()
 
 # REM: [x]; core_private INTERFACE
@@ -315,6 +302,11 @@ else()
   endif()
 endif()
 
+if(TARGET ${project.TARGET_BASENAME}_core)
+  enable_target_sanitizers(
+    ${project.TARGET_BASENAME}_core ${project.TARGET_BASENAME_UP})
+endif()
+
 if(TARGET ${project.TARGET_BASENAME}_resources)
   add_dependencies(
     ${project.TARGET_BASENAME}_core
@@ -359,6 +351,11 @@ if(${project.TARGET_BASENAME_UP}_BUILD_APP)
     ${project.TARGET_BASENAME}_common
     ${project.TARGET_BASENAME}_core)
 
+  if(TARGET ${project.TARGET_BASENAME}_app)
+    enable_target_sanitizers(
+      ${project.TARGET_BASENAME}_app ${project.TARGET_BASENAME_UP})
+  endif()
+
   if(WIN32)
     # REM: Main: Build-time, app-executable; (PE) Windows SHARED libs deps
     # REM: Non-system, non-legacy precompiled libraries
@@ -374,6 +371,23 @@ if(${project.TARGET_BASENAME_UP}_BUILD_APP)
       COMMAND_EXPAND_LISTS
       VERBATIM
       COMMENT "[main](build-time) ${project.TARGET_BASENAME}_app: Extracting and deploying Runtime DLL dependencies.")
+
+    # set_target_properties(
+    # ${project.TARGET_BASENAME}_app
+    # PROPERTIES
+    # REM: Only works with ninja generator
+    # ADDITIONAL_CLEAN_FILES
+    # "$<IF:$<BOOL:$<TARGET_RUNTIME_DLLS:${project.TARGET_BASENAME}_app>>,$<PATH:COMBINE,$<TARGET_FILE_DIR:${project.TARGET_BASENAME}_app>,$<PATH:GET_FILENAME,$<TARGET_RUNTIME_DLLS:${project.TARGET_BASENAME}_app>>>,>")
+    # get_target_property(_app_bin_dir
+    # ${project.TARGET_BASENAME}_app BINARY_DIR)
+    set_property(
+      DIRECTORY "${CMAKE_BINARY_DIR}"
+      APPEND PROPERTY
+
+      # REM: Only works with ninja generator
+      ADDITIONAL_CLEAN_FILES
+      "$<LIST:TRANSFORM,$<PATH:GET_FILENAME,$<TARGET_RUNTIME_DLLS:${project.TARGET_BASENAME}_app>>,PREPEND,$<TARGET_FILE_DIR:${project.TARGET_BASENAME}_app>/>")
+    unset(_app_bin_dir)
   endif()
 
   if(${project.TARGET_BASENAME_UP}_PACKAGE)

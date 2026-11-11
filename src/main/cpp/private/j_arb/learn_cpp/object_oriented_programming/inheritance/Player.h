@@ -14,7 +14,18 @@ namespace j_arb::learn_cpp::object_oriented_programming::inheritance
 
     public: explicit Player() : Player(nullptr)
     {
+      // int* x = new int(1);
+      // delete x;
+      // //REM: Address HEAP (use-after-free)
+      // //REM: Using volatile (REQUIRED) prevents the compiler from 
+      // //REM: optimizing the read away.
+      // int volatile y = *x;
+      // (void)y;
 
+      // int max_val = std::numeric_limits<int>::max();
+      // //REM: UB (signed-integer-overflow)
+      // int overflowed = max_val + 1;
+      // (void)overflowed;
     }
 
     public: explicit Player(char const* name) :
@@ -88,10 +99,10 @@ namespace j_arb::learn_cpp::object_oriented_programming::inheritance
 
       if (obj == nullptr)
       {
-      #ifndef NDEBUG
+#ifndef NDEBUG
         std::cerr << "::: Mismatch: Expected a Player or Player-derived type, actual: '" << other << "'\n";
-      #endif
-        // throw std::bad_cast(); //REM: Loud
+#endif
+  // throw std::bad_cast(); //REM: Loud
         return *this; //REM: Silent
       }
 

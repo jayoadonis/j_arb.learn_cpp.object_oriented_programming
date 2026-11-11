@@ -1,6 +1,8 @@
 #ifndef J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_ENCAPSULATION_TYPE_H
 #define J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_ENCAPSULATION_TYPE_H
 
+#include <ostream>
+
 namespace j_arb::learn_cpp::object_oriented_programming::encapsulation
 {
 

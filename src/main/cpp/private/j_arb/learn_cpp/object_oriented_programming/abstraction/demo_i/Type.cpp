@@ -108,6 +108,8 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     char const* Type::to_cstr() const
   {
+    //REM: TODO; use prvalue to return internal resources 
+    //REM: Does the compiler will optimize it safely?
     return get_type_as_string(*this).c_str();
   }
 

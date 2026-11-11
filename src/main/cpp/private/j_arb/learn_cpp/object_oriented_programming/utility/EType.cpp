@@ -5,7 +5,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
 {
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     EType validate_e_type(EType e_type)
   {
     return (EType::ALL & e_type) != e_type
@@ -14,7 +14,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     char const* get_e_type_as_cstr(EType e_type)
   {
     switch (e_type)
@@ -25,7 +25,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
     case EType::ITEM:     return "ITEM";
     case EType::UNKNOWN:  return "UNKNOWN";
     case EType::NONE:     return "NONE";
-    default:              
+    default:
       if (e_type > EType::ALL)
       {
         return "OUT_OF_BOUNDS";
@@ -37,30 +37,43 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     std::string get_e_type_as_string(EType e_type)
   {
     EType_t const t = static_cast<EType_t>(e_type);
 
-    return std::string(get_e_type_as_cstr(e_type)) 
-      + "(" + std::to_string(t) +")";
+    return std::string(get_e_type_as_cstr(e_type))
+      + "(" + std::to_string(t) + ")";
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     std::string get_e_type_as_string_dump(EType e_type)
   {
     EType_t const t = static_cast<EType_t>(e_type);
+    
+    // int max_val = std::numeric_limits<int>::max();
+    // //REM: UB (signed-integer-overflow)
+    // int overflowed = max_val + 1;
+    // (void)overflowed;
+
+    // int* x = new int(1);
+    // delete x;
+    // //REM: Address HEAP (use-after-free)
+    // //REM: Using volatile (REQUIRED) prevents the compiler from 
+    // //REM: optimizing the read away.
+    // int volatile y = *x;
+    // (void)y;
 
     return std::string(get_e_type_as_cstr(e_type))
       + "@[type_name='" + typeid(t).name() + "', value=" + std::to_string(t) + "]\n";
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     EType get_e_type_from_string(
       std::string_view sv
-  ) {
+    ) {
     if (sv == "ALL") return EType::ALL;
     if (sv == "ACTOR") return EType::ACTOR;
     if (sv == "ITEM")  return EType::ITEM;
@@ -70,11 +83,11 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     EType contain_e_type(EType target, EType search)
   {
     if (search == EType::NPOS
-      || search == EType::NONE) 
+      || search == EType::NONE)
     {
       return EType::NPOS;
     }
@@ -85,7 +98,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     std::ostream& operator<<(
       std::ostream& os, EType e_type)
   {
@@ -94,16 +107,16 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     std::istream& operator>>(
       std::istream& is, EType& e_type)
   {
     std::string token;
-    if (is >> token) 
+    if (is >> token)
     {
       EType tmp = get_e_type_from_string(token);
 
-      if(tmp == EType::NONE || tmp == EType::NPOS)
+      if (tmp == EType::NONE || tmp == EType::NPOS)
       {
         is.setstate(std::ios::failbit);
       }
@@ -116,36 +129,36 @@ namespace j_arb::learn_cpp::object_oriented_programming::utility
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     EType operator|(EType lhs, EType rhs)
   {
     return static_cast<EType>(
       static_cast<EType_t>(lhs) | static_cast<EType_t>(rhs)
-    );
+      );
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     EType operator&(EType lhs, EType rhs)
   {
     return static_cast<EType>(
       static_cast<EType_t>(lhs) & static_cast<EType_t>(rhs)
-    );
+      );
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     EType operator^(EType lhs, EType rhs)
   {
     return static_cast<EType>(
       static_cast<EType_t>(lhs) ^ static_cast<EType_t>(rhs)
-    );
+      );
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     EType operator~(EType e_type)
   {
     return static_cast<EType>(
       ~static_cast<EType_t>(e_type)
-    );
+      );
   }
 
 }

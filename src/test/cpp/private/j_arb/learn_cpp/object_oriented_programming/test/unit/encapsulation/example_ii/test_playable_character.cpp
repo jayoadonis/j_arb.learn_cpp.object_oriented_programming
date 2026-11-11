@@ -1,4 +1,5 @@
 
+#include <limits>
 #include <string_view>
 #include <catch2/catch_test_macros.hpp>
 #include "j_arb/learn_cpp/object_oriented_programming/encapsulation/example_ii/PlayableCharacter.h"
@@ -166,4 +167,21 @@ TEST_CASE(
     }
     REQUIRE(std::string_view(p_char_move_sptr->get_name()) == "name_ii");
   }
+
 }
+
+// TEST_CASE("Trivial signed-integer-overflow", "[asan][ubsan][trivial]") {
+//   int max_val = std::numeric_limits<int>::max();
+//   int overflowed = max_val + 1;
+//   (void)overflowed;
+//   REQUIRE(true);
+// }
+
+// TEST_CASE("use-after-free", "[asan][trivial]") {
+//   int* x = new int(1);
+//   delete x;
+
+//   // Using volatile (REQUIRED) prevents the compiler from optimizing the read away
+//   int volatile y = *x;
+//   (void)y;
+// }

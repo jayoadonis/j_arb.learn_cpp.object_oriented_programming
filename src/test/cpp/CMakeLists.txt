@@ -37,14 +37,43 @@ else()
   list(INSERT CMAKE_MODULE_PATH 0
     "${catch2_SOURCE_DIR}/extras")
 
+  # if(TARGET Catch2)
+  # target_link_libraries(Catch2
+  # PRIVATE ${project.TARGET_BASENAME}_common)
+  # endif()
+
+  # if(TARGET Catch2WithMain)
+  # target_link_libraries(Catch2WithMain
+  # PRIVATE ${project.TARGET_BASENAME}_common)
+  # endif()
   if(TARGET Catch2)
-    target_link_libraries(Catch2
-      PRIVATE ${project.TARGET_BASENAME}_common)
+    target_compile_features(
+      Catch2
+      PRIVATE "${project.CXX_STD}")
+
+    if(MSVC)
+      target_compile_options(Catch2 PRIVATE /W0)
+    else()
+      target_compile_options(Catch2 PRIVATE -w)
+    endif()
+
+    enable_target_sanitizers(
+      Catch2 ${project.TARGET_BASENAME_UP})
   endif()
 
   if(TARGET Catch2WithMain)
-    target_link_libraries(Catch2WithMain
-      PRIVATE ${project.TARGET_BASENAME}_common)
+    target_compile_features(
+      Catch2WithMain
+      PRIVATE "${project.CXX_STD}")
+
+    if(MSVC)
+      target_compile_options(Catch2WithMain PRIVATE /W0)
+    else()
+      target_compile_options(Catch2WithMain PRIVATE -w)
+    endif()
+
+    enable_target_sanitizers(
+      Catch2WithMain ${project.TARGET_BASENAME_UP})
   endif()
 endif()
 
@@ -149,16 +178,26 @@ catch_discover_tests(
   ${project.TARGET_BASENAME}_app_test
   DISCOVERY_MODE PRE_TEST
   ADD_TAGS_AS_LABELS
-  PROPERTIES LABELS *)
+  PROPERTIES
+  LABELS *
+  ENVIRONMENT "${project.TEST_ENV_VARS}"
+  DL_PATHS "${project.CXX_COMPILER_DIR}" #[["$ENV{PATH}"]])
+
+if(TARGET ${project.TARGET_BASENAME}_app_test)
+  enable_target_sanitizers(
+    ${project.TARGET_BASENAME}_app_test ${project.TARGET_BASENAME_UP})
+endif()
 
 if(WIN32)
-  # REM: Test: Build-time, app-executable;
-  # REM: (PE) Windows SHARED libs deps,
-  # REM: Non-system, non-legacy precompiled libraries
+  # REM: Test target post-build deployment.
+  # REM: Automatically extracts and copies all non-system precompiled
+  # REM: Windows shared library dependencies (PE DLLs) into the test execution folder. (non-system imported precompiled libraries and internal build-from-source precompiled libraries)
   add_custom_command(
     TARGET ${project.TARGET_BASENAME}_app_test
     POST_BUILD
 
+    #[[NOTE: We intentionally pass '$<TARGET_FILE:...>' as the first source argument.
+    This ensures 'copy_if_different' has at least one valid file to copy if '$<TARGET_RUNTIME_DLLS>' is empty, preventing a fatal CMake command syntax error when no dynamic dependencies exist.]]
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "$<TARGET_FILE:${project.TARGET_BASENAME}_app_test>"
     "$<TARGET_RUNTIME_DLLS:${project.TARGET_BASENAME}_app_test>"
@@ -167,6 +206,20 @@ if(WIN32)
     COMMAND_EXPAND_LISTS
     VERBATIM
     COMMENT "[test](build-time) ${project.TARGET_BASENAME}_app_test: Extracting and deploying Runtime DLL dependencies.")
+
+  #[[NOTE: Safely bind it into 'clean'; This will remove the
+    copied non-system system shared libraries that resides adjacent to
+    the binary]]
+  # get_target_property(_app_test_bin_dir
+  # ${project.TARGET_BASENAME}_app_test BINARY_DIR)
+  set_property(
+    DIRECTORY "${CMAKE_BINARY_DIR}"
+    APPEND PROPERTY
+
+    # REM: Only works with ninja generator
+    ADDITIONAL_CLEAN_FILES
+    "$<LIST:TRANSFORM,$<PATH:GET_FILENAME,$<TARGET_RUNTIME_DLLS:${project.TARGET_BASENAME}_app_test>>,PREPEND,$<TARGET_FILE_DIR:${project.TARGET_BASENAME}_app_test>/>")
+  unset(_app_test_bin_dir)
 endif()
 
 if(${project.TARGET_BASENAME_UP}_PACKAGE)
