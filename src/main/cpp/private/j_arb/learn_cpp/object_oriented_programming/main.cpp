@@ -15,27 +15,36 @@ int main(int arg_c, char** arg_v) {
   std::string title("OOP");
 
   app.set_title(title);
-  
+
   std::fprintf(stdout, "::: %s\n", app.get_title().c_str());
 
   app.set_title("OOP_II");
-  
+
   std::fprintf(stdout, "::: %s\n", app.get_title().c_str());
 
   std::fprintf(stdout, "::: %s\n", "Hi there!");
 
+  //REM: BUG UBSAN
   // int max_val = std::numeric_limits<int>::max();
   // //REM: UB (signed-integer-overflow)
   // int overflowed = max_val + 1;
   // (void)overflowed;
+
+  // int* arr = new int[4];
+  // arr[0] = 10;
+  // //REM: BUG ASAN: Out-of-bounds write (index 4 is past the 4-element array)
+  // arr[4] = 99;
+  // delete[] arr;
+
+  // int* ptr = new int(42);
+  // delete ptr;
+  // //REM: BUG ASAN: Reading memory that has already been freed
+  // int leaked_val = *ptr;
+  // std::cout << "[2] Survived heap-use-after-free! Value: " << leaked_val << "\n";
   
-  //REM: Address HEAP (use-after-free)
-  // int* x = new int(1);
-  // delete x;
-  // //REM: Using volatile (REQUIRED) prevents the compiler from 
-  // //REM: optimizing the read away.
-  // int volatile y = *x;
-  // (void)y;
+  // int* null_ptr = nullptr;
+  // //REM: BUG ASAN: Fatal OS access violation (unrecoverable even with halt_on_error=0)
+  // *null_ptr = 123;
 
   object_oriented_programming::encapsulation::
     example_ii::PlayableCharacter p_char;

@@ -1,8 +1,15 @@
-#[[
-  Sanitizers.cmake - Modern List-Based Multi-Config Compatible Module
-  
-  Supports: -D<PREFIX>_SAN_MODE=none OR -D<PREFIX>_SAN_MODE=address;undefined OR -D<PREFIX>_SAN_MODE=address OR -D<PREFIX>_SAN_MODE=undefined OR -D<PREFIX>_SAN_MODE=memory OR -D<PREFIX>_SAN_MODE=thread
-]]
+# Sanitizers.cmake
+#
+# Per-target Sanitizer wiring for GCC, Clang, AppleClang, MSVC and clang-cl.
+#
+# Cache variables (all PREFIX-scoped):
+#   -D<PREFIX>_SAN_MODE         = none | address | undefined | memory | thread
+#                                 (address/undefined may be combined)
+#   -D<PREFIX>_SAN_FORCE_STATIC = ON|OFF   force -static-libasan/-static-libubsan
+#   -D<PREFIX>_SAN_RECOVER      = ON|OFF   continue after a report
+#
+# Mutually exclusive: address, thread, memory.
+# ------------------------------------------------------------------------------
 
 include_guard(GLOBAL)
 include(CheckCXXCompilerFlag)
@@ -15,50 +22,63 @@ function(enable_target_sanitizers TARGET_NAME PREFIX)
 
   string(STRIP "${PREFIX}" PREFIX_UP)
   string(TOUPPER "${PREFIX_UP}" PREFIX_UP)
-
-  if(NOT PREFIX OR PREFIX_UP STREQUAL "")
+  if(PREFIX_UP STREQUAL "")
     message(FATAL_ERROR
-      "enable_target_sanitizers: '${PREFIX}' is not a valid PREFIX such as; (\${PREFIX}_SAN_MODE)")
+      "enable_target_sanitizers: '${PREFIX}' is not a valid PREFIX such as (\${PREFIX}_SAN_MODE)")
   endif()
 
-  # REM: LEAF GUARD: Skips imported targets since precompiled external binaries cannot accept local compiler flag manipulations.
-  get_target_property(IS_IMPORTED ${TARGET_NAME} IMPORTED)
-
-  if(IS_IMPORTED)
-    message(DEBUG
-      "Sanitizers: Skipping imported target '${TARGET_NAME}' (handled by package profile).")
+  # -- Skip non-linking targets -----------------------------------------------
+  get_target_property(_imported ${TARGET_NAME} IMPORTED)
+  if(_imported)
+    message(DEBUG "Sanitizers: skipping imported target '${TARGET_NAME}'")
     return()
   endif()
 
-  # REM: LEAF GUARD: Skips interface targets since they lack compiled binary objects and would throw errors if passed to private flags.
-  get_target_property(TARGET_TYPE ${TARGET_NAME} TYPE)
-
-  if(TARGET_TYPE STREQUAL "INTERFACE_LIBRARY")
-    message(DEBUG
-      "Sanitizers: Skipping interface library target '${TARGET_NAME}' (not a binary leaf).")
+  get_target_property(_type ${TARGET_NAME} TYPE)
+  if(_type STREQUAL "INTERFACE_LIBRARY")
+    message(DEBUG "Sanitizers: skipping interface library '${TARGET_NAME}'")
     return()
   endif()
 
-  set(${PREFIX_UP}_SAN_MODE "none"
-    CACHE STRING "List of sanitizers to enable (none, address, undefined, memory, thread)")
+  # -- Options ---------------------------------------------------------------
+  set(${PREFIX_UP}_SAN_MODE "none" CACHE STRING
+      "List of sanitizers to enable: none, address, undefined, memory, thread")
   option(${PREFIX_UP}_SAN_FORCE_STATIC
-    "Force static linking of sanitizer runtimes" OFF)
+         "Force static sanitizer runtime linkage (GCC)" OFF)
+  option(${PREFIX_UP}_SAN_RECOVER
+         "Continue after sanitizer errors (runtime-recoverable)" OFF)
 
-  # REM: Convert the entire list to lowercase for robust string matching
-  string(TOLOWER "${${PREFIX_UP}_SAN_MODE}" SAN_MODE_LOWER)
+  string(TOLOWER "${${PREFIX_UP}_SAN_MODE}" _mode)
 
-  # REM: Clean exit if the mode is explicitly set to none, empty, or false
-  if(NOT SAN_MODE_LOWER OR SAN_MODE_LOWER STREQUAL "none" OR SAN_MODE_LOWER STREQUAL "off" OR SAN_MODE_LOWER STREQUAL "false")
+  # -- Resolve enabled state WITHOUT inverting the macro ---------------------
+  set(_enabled 1)
+  if(_mode STREQUAL "" OR _mode STREQUAL "none" OR
+     _mode STREQUAL "off" OR _mode STREQUAL "false")
+    set(_enabled 0)
+  endif()
+
+  if(${PREFIX_UP}_SAN_RECOVER)
+    set(_recover_def 1)
+  else()
+    set(_recover_def 0)
+  endif()
+
+  target_compile_definitions(${TARGET_NAME} PRIVATE
+    OBJECT_ORIENTED_PROGRAMMING_SAN_MODE=${_enabled}
+    OBJECT_ORIENTED_PROGRAMMING_SAN_RECOVER=${_recover_def})
+
+  if(NOT _enabled)
+    message(DEBUG "Sanitizers: disabled on target '${TARGET_NAME}'")
     return()
   endif()
 
-  # REM: Track choices to validate mutual exclusivity
-  set(HAS_ASAN FALSE)
+  # -- Parse requested sanitizer list ----------------------------------------
+  set(HAS_ASAN  FALSE)
   set(HAS_UBSAN FALSE)
-  set(HAS_TSAN FALSE)
-  set(HAS_MSAN FALSE)
+  set(HAS_TSAN  FALSE)
+  set(HAS_MSAN  FALSE)
 
-  foreach(MODE ${SAN_MODE_LOWER})
+  foreach(MODE ${_mode})
     if(MODE STREQUAL "address")
       set(HAS_ASAN TRUE)
     elseif(MODE STREQUAL "undefined")
@@ -69,129 +89,141 @@ function(enable_target_sanitizers TARGET_NAME PREFIX)
       set(HAS_MSAN TRUE)
     elseif(MODE STREQUAL "none")
       message(FATAL_ERROR
-        "Sanitizers: 'none' cannot be combined with active sanitizers in list: ${${PREFIX_UP}_SAN_MODE}")
+        "Sanitizers: 'none' cannot be combined with active sanitizers "
+        "in list: '${${PREFIX_UP}_SAN_MODE}'")
     else()
       message(FATAL_ERROR
-        "Sanitizers: Unknown mode '${MODE}'. Choose from: none, address, undefined, memory, thread")
+        "Sanitizers: unknown mode '${MODE}'. Choose from: "
+        "none, address, undefined, memory, thread")
     endif()
   endforeach()
 
-  # REM: Enforce mutual exclusivity
-  if((HAS_TSAN AND HAS_ASAN) OR(HAS_MSAN AND HAS_ASAN) OR(HAS_MSAN AND HAS_TSAN))
+  if((HAS_TSAN AND HAS_ASAN) OR (HAS_MSAN AND HAS_ASAN) OR (HAS_MSAN AND HAS_TSAN))
     message(FATAL_ERROR
-      "Sanitizers: address, thread, and memory sanitizers are mutually exclusive.")
+      "Sanitizers: address, thread and memory sanitizers are mutually exclusive.")
   endif()
 
-  set(COMPILER_FLAGS "")
-  set(LINKER_FLAGS "")
-  set(OPTIMIZED_CONFIGS
-    "Release" "RelWithDebInfo" "MinSizeRel")
+  set(_compile "")
+  set(_link    "")
 
-  # REM: GCC / Clang / AppleClang Flag Resolver
+  # ---------------------------------------------------------------------------
+  # GCC / Clang / AppleClang (incl. clang-cl)
+  # ---------------------------------------------------------------------------
   if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    list(APPEND
-      COMPILER_FLAGS "-fno-omit-frame-pointer" "-g")
+    list(APPEND _compile "-fno-omit-frame-pointer" "-g")
 
-    foreach(CONFIG ${OPTIMIZED_CONFIGS})
-      list(APPEND
-        COMPILER_FLAGS "$<$<CONFIG:${CONFIG}>:-O2>")
-    endforeach()
-
-    set(SAN_LIST "")
-
+    set(_san_list "")
     if(HAS_ASAN)
-      list(APPEND SAN_LIST "address")
+      list(APPEND _san_list "address")
     endif()
-
     if(HAS_TSAN)
-      list(APPEND SAN_LIST "thread")
+      list(APPEND _san_list "thread")
     endif()
-
     if(HAS_UBSAN)
-      list(APPEND SAN_LIST "undefined")
+      list(APPEND _san_list "undefined")
     endif()
-
     if(HAS_MSAN)
       if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        message(FATAL_ERROR
-          "Sanitizers: MSan is not supported by GCC. Use Clang.")
+        message(FATAL_ERROR "Sanitizers: MSan is not supported by GCC; use Clang.")
       endif()
-
-      list(APPEND SAN_LIST "memory")
-      list(APPEND COMPILER_FLAGS
-        "-fsanitize-memory-track-origins=2")
+      list(APPEND _san_list "memory")
+      list(APPEND _compile "-fsanitize-memory-track-origins=2")
     endif()
 
-    if(SAN_LIST)
-      list(JOIN SAN_LIST "," SAN_STR)
-      set(TEST_FLAG "-fsanitize=${SAN_STR}")
+    if(_san_list)
+      list(JOIN _san_list "," _san_str)
+      set(_test_flag "-fsanitize=${_san_str}")
 
-      set(CMAKE_REQUIRED_FLAGS
-        "${TEST_FLAG} -fno-omit-frame-pointer")
-      check_cxx_compiler_flag("${TEST_FLAG}"
-        COMPILER_SUPPORTS_SANITIZER)
+      string(MAKE_C_IDENTIFIER "${_test_flag}" _flag_id)
+      set(_check_var "COMPILER_SUPPORTS_${PREFIX_UP}_SAN_${_flag_id}")
+
+      set(CMAKE_REQUIRED_FLAGS       "${_test_flag} -fno-omit-frame-pointer")
+      set(CMAKE_REQUIRED_LINK_OPTIONS "${_test_flag}")
+      check_cxx_compiler_flag("${_test_flag}" ${_check_var})
       unset(CMAKE_REQUIRED_FLAGS)
+      unset(CMAKE_REQUIRED_LINK_OPTIONS)
 
-      if(NOT COMPILER_SUPPORTS_SANITIZER)
+      if(NOT ${_check_var})
         message(FATAL_ERROR
-          "Sanitizers: The compiler ${CMAKE_CXX_COMPILER_ID} does not support '-fsanitize=${SAN_STR}'.")
+          "Sanitizers: ${CMAKE_CXX_COMPILER_ID} does not support '${_test_flag}'.")
       endif()
 
-      list(APPEND COMPILER_FLAGS "${TEST_FLAG}")
-      list(APPEND LINKER_FLAGS "${TEST_FLAG}")
+      list(APPEND _compile "${_test_flag}")
+      list(APPEND _link    "${_test_flag}")
     endif()
 
-    if(HAS_UBSAN)
-      list(APPEND COMPILER_FLAGS
-        "-fno-sanitize-recover=all")
+    # Recover / halt behavior
+    if(${PREFIX_UP}_SAN_RECOVER)
+      if(HAS_ASAN)
+        list(APPEND _compile "-fsanitize-recover=address")
+      endif()
+      if(HAS_UBSAN)
+        list(APPEND _compile "-fsanitize-recover=undefined")
+      endif()
+    else()
+      if(HAS_UBSAN)
+        list(APPEND _compile "-fno-sanitize-recover=all")
+      endif()
     endif()
 
+    # Optional static runtime linkage (GCC only by design)
     if(${PREFIX_UP}_SAN_FORCE_STATIC AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
       if(HAS_ASAN)
-        list(APPEND LINKER_FLAGS "-static-libasan")
+        list(APPEND _link "-static-libasan")
       endif()
-
       if(HAS_UBSAN)
-        list(APPEND LINKER_FLAGS "-static-libubsan")
+        list(APPEND _link "-static-libubsan")
       endif()
-
       if(HAS_TSAN)
-        list(APPEND LINKER_FLAGS "-static-libtsan")
+        list(APPEND _link "-static-libtsan")
       endif()
     endif()
 
-  # REM: MSVC (Windows Ecosystem)
+  # ---------------------------------------------------------------------------
+  # MSVC (cl.exe) -- ASan only
+  # ---------------------------------------------------------------------------
   elseif(MSVC)
     if(HAS_ASAN)
+      set(_check_var "MSVC_SUPPORTS_${PREFIX_UP}_SAN_ASAN")
       set(CMAKE_REQUIRED_FLAGS "/fsanitize=address")
-      check_cxx_compiler_flag(
-        "/fsanitize=address" MSVC_SUPPORTS_ASAN)
+      check_cxx_compiler_flag("/fsanitize=address" ${_check_var})
       unset(CMAKE_REQUIRED_FLAGS)
 
-      if(NOT MSVC_SUPPORTS_ASAN)
+      if(NOT ${_check_var})
         message(FATAL_ERROR
-          "Sanitizers: This version of MSVC does not support '/fsanitize=address'.")
+          "Sanitizers: this MSVC does not support '/fsanitize=address'.")
       endif()
 
-      list(APPEND COMPILER_FLAGS
-        "/fsanitize=address" "/Zi")
+      list(APPEND _compile "/fsanitize=address" "/Zi")
+      list(APPEND _link    "/INCREMENTAL:NO")
 
-      # REM: No caching, re-compiled everytime,
-      # REM: for address sanitization to work properly.
-      list(APPEND LINKER_FLAGS "/INCREMENTAL:NO")
+      # Prevent LNK2038 (annotate_string / annotate_vector) against non-ASan libs.
+      set(_check_var "MSVC_SUPPORTS_${PREFIX_UP}_SAN_NOVCASAN")
+      set(CMAKE_REQUIRED_FLAGS "/fsanitize=address /fno-sanitize-address-vcasan-lib")
+      check_cxx_compiler_flag("/fno-sanitize-address-vcasan-lib" ${_check_var})
+      unset(CMAKE_REQUIRED_FLAGS)
 
-      foreach(CONFIG ${OPTIMIZED_CONFIGS})
-        list(APPEND COMPILER_FLAGS
-          "$<$<CONFIG:${CONFIG}>:/O2>")
-      endforeach()
+      if(${_check_var})
+        list(APPEND _compile "/fno-sanitize-address-vcasan-lib")
+      # else()
+        target_compile_definitions(${TARGET_NAME} PRIVATE
+          _DISABLE_STRING_ANNOTATION
+          _DISABLE_VECTOR_ANNOTATION)
+      endif()
 
-      set_target_properties(${TARGET_NAME}
-        PROPERTIES
-        MSVC_RUNTIME_LIBRARY "$<IF:$<CONFIG:Debug,Development>,MultiThreadedDebugDLL,MultiThreadedDLL>")
+      if(${PREFIX_UP}_SAN_RECOVER)
+        set(_check_var "MSVC_SUPPORTS_${PREFIX_UP}_SAN_RECOVER")
+        check_cxx_compiler_flag("/fsanitize-recover=address" ${_check_var})
+        if(${_check_var})
+          list(APPEND _compile "/fsanitize-recover=address")
+        else()
+          message(WARNING
+            "Sanitizers: this MSVC does not support '/fsanitize-recover=address'.")
+        endif()
+      endif()
 
-      # REM: Locate and deploy the MSVC ASan runtime DLL next to executable/shared leaf targets
-      # REM: Locate and deploy the MSVC ASan runtime DLL next to executable/shared leaf targets
-      if(TARGET_TYPE STREQUAL "EXECUTABLE" OR TARGET_TYPE STREQUAL "SHARED_LIBRARY")
+      # Deploy the ASan runtime DLL next to executables / shared libs.
+      if(_type STREQUAL "EXECUTABLE" OR _type STREQUAL "SHARED_LIBRARY")
         if(CMAKE_SIZEOF_VOID_P EQUAL 8)
           set(_asan_arch "x86_64")
           set(_msvc_target_arch "x64")
@@ -206,57 +238,57 @@ function(enable_target_sanitizers TARGET_NAME PREFIX)
           set(_msvc_host_arch "Hostx86")
         endif()
 
-        set(_asan_dll_filename "clang_rt.asan_dynamic-${_asan_arch}.dll")
-        get_filename_component(_compiler_bin_dir "${CMAKE_CXX_COMPILER}" DIRECTORY)
+        set(_asan_dll "clang_rt.asan_dynamic-${_asan_arch}.dll")
+        get_filename_component(_compiler_bin "${CMAKE_CXX_COMPILER}" DIRECTORY)
 
-        find_file(MSVC_ASAN_DLL
-          NAMES "${_asan_dll_filename}"
+        find_file(_asan_dll_path
+          NAMES "${_asan_dll}"
           PATHS
-          "${_compiler_bin_dir}"
-          "${_compiler_bin_dir}/../../../../bin/${_msvc_host_arch}/${_msvc_target_arch}"
+            "${_compiler_bin}"
+            "${_compiler_bin}/../../../../bin/${_msvc_host_arch}/${_msvc_target_arch}"
           NO_DEFAULT_PATH
           NO_CACHE)
 
-        if(MSVC_ASAN_DLL)
-          add_custom_command(
-            TARGET ${TARGET_NAME}
-            POST_BUILD
+        if(_asan_dll_path)
+          add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${MSVC_ASAN_DLL}"
-            "$<TARGET_FILE_DIR:${TARGET_NAME}>"
+              "${_asan_dll_path}"
+              "$<TARGET_FILE_DIR:${TARGET_NAME}>"
             VERBATIM
-            COMMENT "[Sanitizers] Deploying ${MSVC_ASAN_DLL} to $<TARGET_FILE_DIR:${TARGET_NAME}>")
-
-          # get_target_property(_target_bin_dir ${TARGET_NAME} BINARY_DIR)
-
-          # REM: Bind into 'clean'; this will remove asan dll file
-          set_property(
-            DIRECTORY "${CMAKE_BINARY_DIR}"
-            APPEND PROPERTY
-
-            # REM: Only works with ninja generator?
+            COMMENT "[Sanitizers] deploying ${_asan_dll}")
+          set_property(DIRECTORY "${CMAKE_BINARY_DIR}" APPEND PROPERTY
             ADDITIONAL_CLEAN_FILES
-            "$<PATH:NORMAL_PATH,$<TARGET_FILE_DIR:${TARGET_NAME}>/${_asan_dll_filename}>")
+              "$<PATH:NORMAL_PATH,$<TARGET_FILE_DIR:${TARGET_NAME}>/${_asan_dll}>")
         else()
           message(WARNING
-            "Sanitizers: Could not locate '${_asan_dll_filename}' for automatic deployment.")
+            "Sanitizers: could not locate '${_asan_dll}' for deployment.")
         endif()
       endif()
     endif()
 
     if(HAS_UBSAN OR HAS_TSAN OR HAS_MSAN)
       message(WARNING
-        "Sanitizers: MSVC natively only supports 'address' mode. Other options ignored.")
+        "Sanitizers: MSVC natively supports only ASan ('address'). "
+        "Ignoring UBSan/TSan/MSan.")
     endif()
+
+  # ---------------------------------------------------------------------------
+  # Unsupported compiler
+  # ---------------------------------------------------------------------------
+  else()
+    message(WARNING
+      "Sanitizers: compiler '${CMAKE_CXX_COMPILER_ID}' is not supported.")
+    return()
   endif()
 
-  if(COMPILER_FLAGS)
-    target_compile_options(${TARGET_NAME}
-      PRIVATE ${COMPILER_FLAGS})
+  if(_compile)
+    target_compile_options(${TARGET_NAME} PRIVATE ${_compile})
+  endif()
+  if(_link)
+    target_link_options(${TARGET_NAME} PRIVATE ${_link})
   endif()
 
-  if(LINKER_FLAGS)
-    target_link_options(${TARGET_NAME}
-      PRIVATE ${LINKER_FLAGS})
-  endif()
+  message(STATUS
+    "Sanitizers: [${${PREFIX_UP}_SAN_MODE}] enabled on '${TARGET_NAME}' "
+    "(RECOVER=${${PREFIX_UP}_SAN_RECOVER})")
 endfunction()

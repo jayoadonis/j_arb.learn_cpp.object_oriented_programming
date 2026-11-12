@@ -39,10 +39,11 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
       ) return;
 
     std::size_t new_len = std::strlen(id_ptr);
+    std::size_t new_buff_cap = new_len + 1;
 
-    char* new_buff = new char[new_len + 1];
-    std::copy_n(id_ptr, new_len, new_buff);
-    new_buff[new_len] = '\0';
+    char* new_buff = new char[new_buff_cap];
+    std::copy_n(id_ptr, new_buff_cap, new_buff);
+    // new_buff[new_len] = '\0';
 
     delete[] this->m_id_ptr;
     this->m_id_ptr = new_buff;

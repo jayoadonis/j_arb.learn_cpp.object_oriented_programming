@@ -96,21 +96,28 @@ option(${project.TARGET_BASENAME_UP}_FETCHCONTENT
 get_filename_component(
   project.CXX_COMPILER_DIR "${CMAKE_CXX_COMPILER}" DIRECTORY)
 
-set(project.ASAN_BASE_OPTS "color=always:abort_on_error=1")
-set(project.UBSAN_BASE_OPTS "print_stacktrace=1:color=always:halt_on_error=1")
+# if(MSVC)
+#   set(project.ASAN_BASE_OPTS 
+#     "color=always:continue_on_error=1:malloc_context_size=3:fast_unwind_on_malloc=1")
+# else()
+#   set(project.ASAN_BASE_OPTS 
+#     "color=always:halt_on_error=0:malloc_context_size=3:fast_unwind_on_malloc=1")
+# endif()
 
-if(NOT WIN32)
-  string(APPEND project.ASAN_BASE_OPTS ":detect_leaks=1")
-endif()
+# set(project.UBSAN_BASE_OPTS "color=always:halt_on_error=0:print_stacktrace=1")
 
-set(project.TEST_ENV_VARS
-  "ASAN_OPTIONS=${project.ASAN_BASE_OPTS}"
-  "UBSAN_OPTIONS=${project.UBSAN_BASE_OPTS}")
+# if(NOT WIN32)
+#   string(APPEND project.ASAN_BASE_OPTS ":detect_leaks=1")
+# endif()
 
-if(WIN32)
-  list(APPEND project.TEST_ENV_VARS
-    "PATH=${project.CXX_COMPILER_DIR}${project.PATH_SEP}$ENV{PATH}")
-endif()
+# set(project.TEST_ENV_VARS
+#   "ASAN_OPTIONS=${project.ASAN_BASE_OPTS}"
+#   "UBSAN_OPTIONS=${project.UBSAN_BASE_OPTS}")
+
+# if(WIN32)
+#   list(APPEND project.TEST_ENV_VARS
+#     "PATH=${project.CXX_COMPILER_DIR}${project.PATH_SEP}$ENV{PATH}")
+# endif()
 
 add_subdirectory("src/main/cpp")
 

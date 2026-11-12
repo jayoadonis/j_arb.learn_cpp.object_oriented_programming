@@ -2,6 +2,8 @@
 #ifndef J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_APP_H
 #define J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_APP_H
 
+#include "j_arb/learn_cpp/object_oriented_programming/sanitizer_hook.h"
+
 #include "j_arb/learn_cpp/object_oriented_programming/export.h"
 #include <string>
 

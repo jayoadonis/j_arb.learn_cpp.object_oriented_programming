@@ -57,8 +57,8 @@ else()
       target_compile_options(Catch2 PRIVATE -w)
     endif()
 
-    enable_target_sanitizers(
-      Catch2 ${project.TARGET_BASENAME_UP})
+    # enable_target_sanitizers(
+    #   Catch2 ${project.TARGET_BASENAME_UP})
   endif()
 
   if(TARGET Catch2WithMain)
@@ -72,8 +72,8 @@ else()
       target_compile_options(Catch2WithMain PRIVATE -w)
     endif()
 
-    enable_target_sanitizers(
-      Catch2WithMain ${project.TARGET_BASENAME_UP})
+    # enable_target_sanitizers(
+    #   Catch2WithMain ${project.TARGET_BASENAME_UP})
   endif()
 endif()
 
