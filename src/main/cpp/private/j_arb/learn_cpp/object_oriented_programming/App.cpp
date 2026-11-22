@@ -7,7 +7,6 @@
 namespace j_arb::learn_cpp::object_oriented_programming {
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-    OBJECT_ORIENTED_PROGRAMMING_API
     App::App() : m_title("N/a")
   {
 
@@ -26,25 +25,21 @@ namespace j_arb::learn_cpp::object_oriented_programming {
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-    OBJECT_ORIENTED_PROGRAMMING_API
     App::~App() = default;
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-    OBJECT_ORIENTED_PROGRAMMING_API
     void App::set_title(std::string const& title)
   {
     this->set_title(title.c_str());
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-    OBJECT_ORIENTED_PROGRAMMING_API
     void App::set_title(char const* title)
   {
     this->m_title = title;
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-    OBJECT_ORIENTED_PROGRAMMING_API
     std::string App::get_title() const
   {
 
@@ -58,7 +53,6 @@ namespace j_arb::learn_cpp::object_oriented_programming {
   }
 
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
-    OBJECT_ORIENTED_PROGRAMMING_API
     void func_app(int arg_c, char** arg_v)
   {
     std::cout << "<3> " << arg_c << "\n";

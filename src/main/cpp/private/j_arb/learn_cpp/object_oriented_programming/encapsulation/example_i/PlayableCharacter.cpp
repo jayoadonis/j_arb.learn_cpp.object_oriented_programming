@@ -1,22 +1,23 @@
-
 #include <cstring>
 #include <algorithm>
 #include "j_arb/learn_cpp/object_oriented_programming/export.h"
 #include "j_arb/learn_cpp/object_oriented_programming/encapsulation/example_i/PlayableCharacter.h"
+
+using namespace std::literals;
 
 namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_i
 {
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
     OBJECT_ORIENTED_PROGRAMMING_API
     PlayableCharacter::PlayableCharacter()
-    : PlayableCharacter(nullptr, nullptr)
+    : PlayableCharacter(nullptr)
   {
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
     OBJECT_ORIENTED_PROGRAMMING_API
     PlayableCharacter::PlayableCharacter(
-      char const* id_ptr, char const* name_ptr [[maybe_unused]]
-    ) : m_id_ptr(nullptr), m_name_ptr(nullptr)
+      char const* id_ptr, std::string name
+    ) : m_id_ptr(nullptr), m_name(std::move(name))
   {
     this->set_id(id_ptr);
   }
@@ -25,7 +26,7 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
     PlayableCharacter::~PlayableCharacter()
   {
     delete[] this->m_id_ptr;
-    delete[] this->m_name_ptr;
+    // delete[] this->m_name_ptr;
   }
   OBJECT_ORIENTED_PROGRAMMING_API_INLINE
     OBJECT_ORIENTED_PROGRAMMING_API
@@ -55,5 +56,27 @@ namespace j_arb::learn_cpp::object_oriented_programming::encapsulation::example_
     char const* PlayableCharacter::get_id() const& noexcept
   {
     return this->m_id_ptr ? this->m_id_ptr : "N/a";
+  }
+  OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+    OBJECT_ORIENTED_PROGRAMMING_API
+    void PlayableCharacter::set_name(std::string name) noexcept
+  {
+    this->m_name = std::move(name);
+    return;
+  }
+  OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+    OBJECT_ORIENTED_PROGRAMMING_API
+    std::string PlayableCharacter::get_name() const&
+  {
+    return !this->m_name.empty() 
+      ? this->m_name : "N/a";
+  }
+  OBJECT_ORIENTED_PROGRAMMING_API_INLINE
+    OBJECT_ORIENTED_PROGRAMMING_API
+    std::string PlayableCharacter::get_name() && noexcept
+  {
+    return !this->m_name.empty()
+      ? std::move(this->m_name)
+      : "N/a"s;
   }
 }

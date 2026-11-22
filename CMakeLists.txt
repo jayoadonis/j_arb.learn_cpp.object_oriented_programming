@@ -5,6 +5,12 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/Sanitizers.cmake")
 
 load_that_env("${CMAKE_CURRENT_SOURCE_DIR}/.env.root")
 
+if(WIN32 AND NOT CMAKE_GENERATOR MATCHES "Visual Studio")
+  #REM: If greater than 249 chars, then you must also
+  #REM: set the Windows Registry LongPathsEnabled to `1`
+  set(CMAKE_OBJECT_PATH_MAX 4096)
+endif()
+
 project("${env.project.NAME}"
   VERSION "${env.project.VERSION}"
   DESCRIPTION ""
@@ -39,6 +45,7 @@ set(project.REGEX_ENTRYPOINT_FILENAME
 if(WIN32)
   set(project.PATH_SEP ";")
   set(project.REGEX_SYSTEM_PRECOMPILED_RUNTIME_DEPENDENCIES
+    "^libc[+][+]\\.dll"
     "^ext-ms-.*\\.dll"
     "^[Kk][Ee][Rr][Nn][Ee][Ll]32\\.dll"
     "^[Aa][Pp][Ii]-[Mm][Ss]-.*\\.dll"
@@ -52,7 +59,7 @@ else()
   if(APPLE)
     set(project.RPATH "@loader_path")
   else()
-    set(project.RPATH "\\$ORIGIN")
+    set(project.RPATH "$ORIGIN")  
   endif()
 
   set(project.REGEX_SYSTEM_PRECOMPILED_RUNTIME_DEPENDENCIES
@@ -95,29 +102,6 @@ option(${project.TARGET_BASENAME_UP}_FETCHCONTENT
 
 get_filename_component(
   project.CXX_COMPILER_DIR "${CMAKE_CXX_COMPILER}" DIRECTORY)
-
-# if(MSVC)
-#   set(project.ASAN_BASE_OPTS 
-#     "color=always:continue_on_error=1:malloc_context_size=3:fast_unwind_on_malloc=1")
-# else()
-#   set(project.ASAN_BASE_OPTS 
-#     "color=always:halt_on_error=0:malloc_context_size=3:fast_unwind_on_malloc=1")
-# endif()
-
-# set(project.UBSAN_BASE_OPTS "color=always:halt_on_error=0:print_stacktrace=1")
-
-# if(NOT WIN32)
-#   string(APPEND project.ASAN_BASE_OPTS ":detect_leaks=1")
-# endif()
-
-# set(project.TEST_ENV_VARS
-#   "ASAN_OPTIONS=${project.ASAN_BASE_OPTS}"
-#   "UBSAN_OPTIONS=${project.UBSAN_BASE_OPTS}")
-
-# if(WIN32)
-#   list(APPEND project.TEST_ENV_VARS
-#     "PATH=${project.CXX_COMPILER_DIR}${project.PATH_SEP}$ENV{PATH}")
-# endif()
 
 add_subdirectory("src/main/cpp")
 

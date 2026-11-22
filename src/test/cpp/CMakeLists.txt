@@ -58,7 +58,7 @@ else()
     endif()
 
     # enable_target_sanitizers(
-    #   Catch2 ${project.TARGET_BASENAME_UP})
+    # Catch2 ${project.TARGET_BASENAME_UP})
   endif()
 
   if(TARGET Catch2WithMain)
@@ -73,7 +73,7 @@ else()
     endif()
 
     # enable_target_sanitizers(
-    #   Catch2WithMain ${project.TARGET_BASENAME_UP})
+    # Catch2WithMain ${project.TARGET_BASENAME_UP})
   endif()
 endif()
 
@@ -110,7 +110,7 @@ add_custom_target(
   "-DMODE=LINK"
   "-P" "${PROJECT_SOURCE_DIR}/cmake/LinkCopyIncremental.process.cmake"
   VERBATIM
-  COMMENT "[test](build-time) ${project.TARGET_BASENAME}_resources_test; Update Resource Paths.")
+  COMMENT "[${project.TARGET_BASENAME}_resources_test](build) Update Resource Paths.")
 
 if(${project.TARGET_BASENAME_UP}_PACKAGE)
   install(
@@ -161,7 +161,14 @@ set_target_properties(
   CXX_EXTENSIONS OFF
   LINKER_LANGUAGE "CXX"
   POSITION_INDEPENDENT_CODE ON
-  RUNTIME_OUTPUT_DIRECTORY "$<CONFIG>/bin")
+  RUNTIME_OUTPUT_DIRECTORY "$<CONFIG>/bin"
+  ARCHIVE_OUTPUT_DIRECTORY "$<CONFIG>/lib"
+  LIBRARY_OUTPUT_DIRECTORY "$<CONFIG>/lib"
+  BUILD_RPATH
+  "${project.RPATH};${project.RPATH}/../lib"
+  INSTALL_RPATH
+  "${project.RPATH};${project.RPATH}/../lib"
+  BUILD_WITH_INSTALL_RPATH OFF)
 target_sources(
   ${project.TARGET_BASENAME}_app_test
   PRIVATE
@@ -174,14 +181,36 @@ target_link_libraries(
   ${project.TARGET_BASENAME}_core
   Catch2::Catch2)
 
+set(project.COMMON_CATCH_DISCOVER_ARGS
+
+  # EXTRA_ARGS "--success"
+  DISCOVERY_MODE PRE_TEST
+  PROPERTIES
+  DL_PATHS "${project.CXX_COMPILER_DIR}")
+
+# REM: Discovers all visible tests
 catch_discover_tests(
   ${project.TARGET_BASENAME}_app_test
-  DISCOVERY_MODE PRE_TEST
   ADD_TAGS_AS_LABELS
+  ${project.COMMON_CATCH_DISCOVER_ARGS})
+
+# REM: Explicitly discovers hidden unit tests
+catch_discover_tests(
+  ${project.TARGET_BASENAME}_app_test
+  TEST_SPEC "[.unit]"
+  TEST_SUFFIX " [hidden_unit]"
+  ${project.COMMON_CATCH_DISCOVER_ARGS}
   PROPERTIES
-  LABELS *
-  ENVIRONMENT "${project.TEST_ENV_VARS}"
-  DL_PATHS "${project.CXX_COMPILER_DIR}" #[["$ENV{PATH}"]])
+  LABELS ".unit")
+
+# REM: Explicitly discovers hidden integration tests
+catch_discover_tests(
+  ${project.TARGET_BASENAME}_app_test
+  TEST_SPEC "[.integration]"
+  TEST_SUFFIX " [hidden_integration]"
+  ${project.COMMON_CATCH_DISCOVER_ARGS}
+  PROPERTIES
+  LABELS ".integration")
 
 if(TARGET ${project.TARGET_BASENAME}_app_test)
   enable_target_sanitizers(
@@ -189,37 +218,67 @@ if(TARGET ${project.TARGET_BASENAME}_app_test)
 endif()
 
 if(WIN32)
-  # REM: Test target post-build deployment.
-  # REM: Automatically extracts and copies all non-system precompiled
-  # REM: Windows shared library dependencies (PE DLLs) into the test execution folder. (non-system imported precompiled libraries and internal build-from-source precompiled libraries)
+  set(_target_app_test
+    "${project.TARGET_BASENAME}_app_test")
+  set(_app_test_runtime_dll_filepaths
+    "$<TARGET_RUNTIME_DLLS:${_target_app_test}>")
+  set(_app_test_runtime_dll_filenames
+    "$<PATH:GET_FILENAME,${_app_test_runtime_dll_filepaths}>")
+  set(_app_test_clean_runtime_dlls
+    "$<LIST:TRANSFORM,${_app_test_runtime_dll_filenames},PREPEND,$<TARGET_FILE_DIR:${_target_app_test}>/>")
+
   add_custom_command(
-    TARGET ${project.TARGET_BASENAME}_app_test
-    POST_BUILD
-
-    #[[NOTE: We intentionally pass '$<TARGET_FILE:...>' as the first source argument.
-    This ensures 'copy_if_different' has at least one valid file to copy if '$<TARGET_RUNTIME_DLLS>' is empty, preventing a fatal CMake command syntax error when no dynamic dependencies exist.]]
+    TARGET ${_target_app_test} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "$<TARGET_FILE:${project.TARGET_BASENAME}_app_test>"
-    "$<TARGET_RUNTIME_DLLS:${project.TARGET_BASENAME}_app_test>"
-    "$<TARGET_FILE_DIR:${project.TARGET_BASENAME}_app_test>"
-
+    "$<TARGET_FILE:${_target_app_test}>"
+    "${_app_test_runtime_dll_filepaths}"
+    "$<TARGET_FILE_DIR:${_target_app_test}>"
     COMMAND_EXPAND_LISTS
     VERBATIM
-    COMMENT "[test](build-time) ${project.TARGET_BASENAME}_app_test: Extracting and deploying Runtime DLL dependencies.")
+    COMMENT "[${_target_app_test}](build) Extracting and deploying Runtime DLL dependencies."
+  )
 
-  #[[NOTE: Safely bind it into 'clean'; This will remove the
-    copied non-system system shared libraries that resides adjacent to
-    the binary]]
-  # get_target_property(_app_test_bin_dir
-  # ${project.TARGET_BASENAME}_app_test BINARY_DIR)
-  set_property(
-    DIRECTORY "${CMAKE_BINARY_DIR}"
-    APPEND PROPERTY
+  if(CMAKE_GENERATOR MATCHES "Ninja|Makefiles")
+    # REM: These generators honor ADDITIONAL_CLEAN_FILES and will delete
+    # REM: the listed files when the global `clean` target runs.
+    if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.20")
+      get_target_property(_tgt_src_dir ${_target_app_test} SOURCE_DIR)
+      set_property(DIRECTORY "${_tgt_src_dir}" APPEND PROPERTY
+        ADDITIONAL_CLEAN_FILES
+        "$<$<BOOL:${_app_test_runtime_dll_filepaths}>:${_app_test_clean_runtime_dlls}>")
+      unset(_tgt_src_dir)
+    else()
+      message(WARNING
+        "[${_target_app_test}](runtime-dlls): CMake ${CMAKE_VERSION} < 3.20; "
+        "skipping clean registration for runtime DLLs (copy still works).")
+    endif()
 
-    # REM: Only works with ninja generator
-    ADDITIONAL_CLEAN_FILES
-    "$<LIST:TRANSFORM,$<PATH:GET_FILENAME,$<TARGET_RUNTIME_DLLS:${project.TARGET_BASENAME}_app_test>>,PREPEND,$<TARGET_FILE_DIR:${project.TARGET_BASENAME}_app_test>/>")
-  unset(_app_test_bin_dir)
+  else()
+    # REM: Visual Studio / Xcode do not expose a scriptable `clean`
+    # REM: target. Provide an explicit per-target clean target.
+    set(_clean_tgt "_runtime_dll_clean_${_target_app_test}")
+
+    if(NOT TARGET ${_clean_tgt})
+      add_custom_target(${_clean_tgt}
+        COMMAND ${CMAKE_COMMAND} -E rm -f
+        "$<$<BOOL:${_app_test_runtime_dll_filepaths}>:${_app_test_clean_runtime_dlls}>"
+        COMMAND_EXPAND_LISTS
+        COMMENT "[${_target_app_test}](clean) removing deployed runtime DLLs"
+        VERBATIM)
+
+      message(STATUS
+        "[${_target_app_test}](runtime-dlls): generator '${CMAKE_GENERATOR}' "
+        "does not support automatic clean registration; run "
+        "`cmake --build . --target ${_clean_tgt}` to remove the deployed DLLs.")
+    endif()
+
+    unset(_clean_tgt)
+  endif()
+
+  unset(_app_test_clean_runtime_dlls)
+  unset(_app_test_runtime_dll_filenames)
+  unset(_app_test_runtime_dll_filepaths)
+  unset(_target_app_test)
 endif()
 
 if(${project.TARGET_BASENAME_UP}_PACKAGE)
@@ -256,5 +315,7 @@ if(${project.TARGET_BASENAME_UP}_PACKAGE)
         COMPONENT app_test_runtime_deps
         OPTIONAL)
     endif()
+
+    unset(_is_imported)
   endif()
 endif()

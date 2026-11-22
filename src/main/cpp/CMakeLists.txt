@@ -43,7 +43,7 @@ add_custom_target(
   "-DFILES_MATCHING=REGEX_EXCLUDE:\\..*keep$"
   "-P" "${PROJECT_SOURCE_DIR}/cmake/LinkCopyIncremental.i.process.cmake"
   VERBATIM
-  COMMENT "[main](build-time) ${project.TARGET_BASENAME}_resources; Update Resource Paths")
+  COMMENT "[${project.TARGET_BASENAME}_resources](build) Update Resource Paths")
 
 if(${project.TARGET_BASENAME_UP}_PACKAGE)
   install(
@@ -205,25 +205,46 @@ else()
       PROPERTIES
       OUTPUT_NAME
       "$<LOWER_CASE:${project.TARGET_BASENAME}>"
+      VERSION "${PROJECT_VERSION}"
       SOVERSION "${PROJECT_VERSION_MAJOR}"
       DEBUG_POSTFIX "d"
+      BUILD_RPATH
+      "${project.RPATH};${project.RPATH}/../lib"
       INSTALL_RPATH
       "${project.RPATH};${project.RPATH}/../lib"
       BUILD_WITH_INSTALL_RPATH OFF)
 
     if(WIN32)
-      # REM: Main: Build-time, core-shared; (PE) Windows SHARED libs deps
-      # REM: Non-system, non-legacy precompiled libraries
+      set(_target_core
+        "${project.TARGET_BASENAME}_core")
+      set(_target_core_runtime_dll_filepaths
+        "$<TARGET_RUNTIME_DLLS:${_target_core}>")
+      set(_target_core_runtime_dll_filenames
+        "$<PATH:GET_FILENAME,${_target_core_runtime_dll_filepaths}>")
+      set(_target_core_clean_runtime_dlls
+        "$<LIST:TRANSFORM,${_target_core_runtime_dll_filenames},PREPEND,$<TARGET_FILE_DIR:${_target_core}>/>")
+
       add_custom_command(
-        TARGET ${project.TARGET_BASENAME}_core
-        POST_BUILD
+        TARGET ${_target_core} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "$<TARGET_FILE:${project.TARGET_BASENAME}_core>"
-        "$<TARGET_RUNTIME_DLLS:${project.TARGET_BASENAME}_core>"
-        "$<TARGET_FILE_DIR:${project.TARGET_BASENAME}_core>"
+        "$<TARGET_FILE:${_target_core}>"
+        "${_target_core_runtime_dll_filepaths}"
+        "$<TARGET_FILE_DIR:${_target_core}>"
         COMMAND_EXPAND_LISTS
         VERBATIM
-        COMMENT "[main](build-time) ${project.TARGET_BASENAME}_core: Extracting and deploying Runtime DLL dependencies.")
+        COMMENT "[${_target_core}](build) Extracting and deploying Runtime DLL dependencies."
+      )
+
+      set_property(
+        DIRECTORY
+        APPEND PROPERTY ADDITIONAL_CLEAN_FILES
+        "$<$<BOOL:${_target_core_runtime_dll_filepaths}>:${_target_core_clean_runtime_dlls}>"
+      )
+
+      unset(_target_core_clean_runtime_dlls)
+      unset(_target_core_runtime_dll_filenames)
+      unset(_target_core_runtime_dll_filepaths)
+      unset(_target_core)
     endif()
   else()
     add_library(
@@ -238,9 +259,11 @@ else()
   set_target_properties(
     ${project.TARGET_BASENAME}_core
     PROPERTIES
+    # DEBUG_POSTFIX "d"
     CXX_EXTENSIONS OFF
     LINKER_LANGUAGE "CXX"
     POSITION_INDEPENDENT_CODE ON
+    WINDOWS_EXPORT_ALL_SYMBOLS OFF
     CXX_VISIBILITY_PRESET "hidden"
     VISIBILITY_INLINES_HIDDEN ON
 
@@ -338,7 +361,12 @@ if(${project.TARGET_BASENAME_UP}_BUILD_APP)
     CXX_EXTENSIONS OFF
     LINKER_LANGUAGE "CXX"
     POSITION_INDEPENDENT_CODE ON
-    RUNTIME_OUTPUT_DIRECTORY "$<CONFIG>/bin")
+    RUNTIME_OUTPUT_DIRECTORY "$<CONFIG>/bin"
+    BUILD_RPATH
+    "${project.RPATH};${project.RPATH}/../lib"
+    INSTALL_RPATH
+    "${project.RPATH};${project.RPATH}/../lib"
+    BUILD_WITH_INSTALL_RPATH OFF)
 
   target_sources(
     ${project.TARGET_BASENAME}_app
@@ -357,37 +385,36 @@ if(${project.TARGET_BASENAME_UP}_BUILD_APP)
   endif()
 
   if(WIN32)
-    # REM: Main: Build-time, app-executable; (PE) Windows SHARED libs deps
-    # REM: Non-system, non-legacy precompiled libraries
+    set(_target_app
+      "${project.TARGET_BASENAME}_app")
+    set(_target_app_runtime_dll_filepaths
+      "$<TARGET_RUNTIME_DLLS:${_target_app}>")
+    set(_target_app_runtime_dll_filenames
+      "$<PATH:GET_FILENAME,${_target_app_runtime_dll_filepaths}>")
+    set(_target_app_clean_dlls
+      "$<LIST:TRANSFORM,${_target_app_runtime_dll_filenames},PREPEND,$<TARGET_FILE_DIR:${_target_app}>/>")
+
     add_custom_command(
-      TARGET ${project.TARGET_BASENAME}_app
-      POST_BUILD
-
+      TARGET ${_target_app} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      "$<TARGET_FILE:${project.TARGET_BASENAME}_app>"
-      "$<TARGET_RUNTIME_DLLS:${project.TARGET_BASENAME}_app>"
-      "$<TARGET_FILE_DIR:${project.TARGET_BASENAME}_app>"
-
+      "$<TARGET_FILE:${_target_app}>"
+      "${_target_app_runtime_dll_filepaths}"
+      "$<TARGET_FILE_DIR:${_target_app}>"
       COMMAND_EXPAND_LISTS
       VERBATIM
-      COMMENT "[main](build-time) ${project.TARGET_BASENAME}_app: Extracting and deploying Runtime DLL dependencies.")
+      COMMENT "[${_target_app}](build) Extracting and deploying Runtime DLL dependencies."
+    )
 
-    # set_target_properties(
-    # ${project.TARGET_BASENAME}_app
-    # PROPERTIES
-    # REM: Only works with ninja generator
-    # ADDITIONAL_CLEAN_FILES
-    # "$<IF:$<BOOL:$<TARGET_RUNTIME_DLLS:${project.TARGET_BASENAME}_app>>,$<PATH:COMBINE,$<TARGET_FILE_DIR:${project.TARGET_BASENAME}_app>,$<PATH:GET_FILENAME,$<TARGET_RUNTIME_DLLS:${project.TARGET_BASENAME}_app>>>,>")
-    # get_target_property(_app_bin_dir
-    # ${project.TARGET_BASENAME}_app BINARY_DIR)
     set_property(
-      DIRECTORY "${CMAKE_BINARY_DIR}"
-      APPEND PROPERTY
+      DIRECTORY
+      APPEND PROPERTY ADDITIONAL_CLEAN_FILES
+      "$<$<BOOL:${_target_app_runtime_dll_filepaths}>:${_target_app_clean_dlls}>"
+    )
 
-      # REM: Only works with ninja generator
-      ADDITIONAL_CLEAN_FILES
-      "$<LIST:TRANSFORM,$<PATH:GET_FILENAME,$<TARGET_RUNTIME_DLLS:${project.TARGET_BASENAME}_app>>,PREPEND,$<TARGET_FILE_DIR:${project.TARGET_BASENAME}_app>/>")
-    unset(_app_bin_dir)
+    unset(_target_app_clean_dlls)
+    unset(_target_app_runtime_dll_filenames)
+    unset(_target_app_runtime_dll_filepaths)
+    unset(_target_app)
   endif()
 
   if(${project.TARGET_BASENAME_UP}_PACKAGE)
@@ -429,6 +456,8 @@ if(${project.TARGET_BASENAME_UP}_BUILD_APP)
           COMPONENT app_runtime_deps
           OPTIONAL)
       endif()
+
+      unset(_is_imported)
     endif()
   endif()
 endif()

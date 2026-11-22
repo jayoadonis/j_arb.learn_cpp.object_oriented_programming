@@ -4,6 +4,7 @@
 #include <iostream>
 #include <ostream>
 #include <string>
+#include <string_view>
 #include "j_arb/learn_cpp/object_oriented_programming/export.h"
 #include <type_traits>
 
@@ -21,6 +22,9 @@ namespace j_arb::learn_cpp::object_oriented_programming::abstraction::demo_i
   };
 
   using EType_t = std::underlying_type_t<EType>;
+
+  OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
+    std::string_view get_type_as_cstr(EType e_type) noexcept;
 
   OBJECT_ORIENTED_PROGRAMMING_API_INTERNAL
     std::string get_type_as_string(EType const& e_type);

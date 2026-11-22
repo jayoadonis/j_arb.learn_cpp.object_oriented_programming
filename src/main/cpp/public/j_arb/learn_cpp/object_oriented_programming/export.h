@@ -7,7 +7,8 @@
 #     define OBJECT_ORIENTED_PROGRAMMING_EXPORT       __declspec(dllexport)
 #     define OBJECT_ORIENTED_PROGRAMMING_IMPORT       __declspec(dllimport)
 #     define OBJECT_ORIENTED_PROGRAMMING_INTERNAL
-#elif defined(__GNUC__) && (__GNUC__ >= 4) 
+#elif (defined(__GNUC__) && (__GNUC__ >= 4))  || \
+      (defined(__has_attribute) && __has_attribute(visibility))
       //REM: GNU-style; gcc|clang; ELF/Mach-O (Shared)
 #     define OBJECT_ORIENTED_PROGRAMMING_EXPORT       __attribute__((visibility("default")))
 #     define OBJECT_ORIENTED_PROGRAMMING_IMPORT       __attribute__((visibility("default")))
@@ -87,5 +88,29 @@
 #     define OBJECT_ORIENTED_PROGRAMMING_API_DEPRECATED
 #     define OBJECT_ORIENTED_PROGRAMMING_API_DEPRECATED_MSG(msg)
 #endif
+
+
+//REM: Compiler-specific no_sanitize attributes
+#if   defined(_MSC_VER) && !defined(__clang__)
+      //REM: Pure MSVC
+#     define OBJECT_ORIENTED_PROGRAMMING_DETAIL_NO_SANITIZE \
+      __declspec(no_sanitize_address)
+#elif defined(__clang__) && defined(_WIN32)
+      //REM: clang-cl and Clang targeting Windows
+#     define OBJECT_ORIENTED_PROGRAMMING_DETAIL_NO_SANITIZE \
+      __attribute__((no_sanitize("address", "undefined")))
+#elif defined(__clang__)
+      //REM: Standard Clang on Linux / macOS / BSD
+#     define OBJECT_ORIENTED_PROGRAMMING_DETAIL_NO_SANITIZE \
+      __attribute__((no_sanitize("address", "undefined", "thread", "memory", "leak")))
+#elif defined(__GNUC__)
+      //REM: GCC / MinGW-w64
+#     define OBJECT_ORIENTED_PROGRAMMING_DETAIL_NO_SANITIZE \
+      __attribute__((no_sanitize_address, no_sanitize_undefined, no_sanitize_thread))
+#else
+      //REM: Unknown compiler
+#     define OBJECT_ORIENTED_PROGRAMMING_DETAIL_NO_SANITIZE
+#endif
+
 
 #endif //REM: END; J_ARB_LEARN_CPP_OBJECT_ORIENTED_PROGRAMMING_EXPORT_H
