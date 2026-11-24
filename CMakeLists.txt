@@ -5,22 +5,29 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/Sanitizers.cmake")
 
 load_that_env("${CMAKE_CURRENT_SOURCE_DIR}/.env.root")
 
-if(WIN32 AND NOT CMAKE_GENERATOR MATCHES "Visual Studio")
-  #REM: If greater than 249 chars, then you must also
-  #REM: set the Windows Registry LongPathsEnabled to `1`
-  set(CMAKE_OBJECT_PATH_MAX 4096)
-endif()
-
 project("${env.project.NAME}"
   VERSION "${env.project.VERSION}"
   DESCRIPTION ""
   HOMEPAGE_URL ""
   LANGUAGES "CXX")
 
-if(NOT CMAKE_BUILD_TYPE
-  AND NOT CMAKE_CONFIGURATION_TYPES)
-  set(CMAKE_BUILD_TYPE "Debug"
-    CACHE STRING "Build Type" FORCE)
+#REM: Default to Debug for single-config generators (Ninja, Makefiles)
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE "Debug" 
+      CACHE STRING "Build configuration" FORCE)
+    set_property(CACHE CMAKE_BUILD_TYPE 
+      PROPERTY STRINGS "Debug" "Release" "RelWithDebInfo" "MinSizeRel")
+endif()
+
+#REM: llvm clang | clang-cl fully supports long paths enabled
+#REM: IMPORTANT: Must `LongPathsEnabled=1`
+if(WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  #REM: We only trigger obj path-shortenning (hashing),
+  #REM: when exceeded value below (full-filepath characters)
+  set(CMAKE_OBJECT_PATH_MAX 4096)
+  #REM: IMPORTANT: A single-path (1 folder) always max-clamped to 255 chars
+  #REM: NOTICE: msvc or msbuild automatically handle it, however still should
+  #REM: explicitly do `LongPathsEnabled=1`
 endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -59,7 +66,7 @@ else()
   if(APPLE)
     set(project.RPATH "@loader_path")
   else()
-    set(project.RPATH "$ORIGIN")  
+    set(project.RPATH "$ORIGIN")
   endif()
 
   set(project.REGEX_SYSTEM_PRECOMPILED_RUNTIME_DEPENDENCIES

@@ -16,6 +16,8 @@
         - [1.5. With Sanitizers](#15-with-sanitizers)
         - [1.6. Conan + Explicit toolchain file](#16-conan--explicit-toolchain-file-toc)
         - [1.6.1. Conan + Preset](#161-conan--preset-toc)
+        - [1.6.2. Conan + Preset; LLVM Clang | MSYS64 Clang64](#162-conan--preset-llvm-clang--msys64-clang64-toc)
+        - [1.6.3. Conan + Preset; MinGW | MSYS64 ucrt64](#163-conan--preset-mingw--msys64-ucrt64-toc)
     - [2. Flappy Path](#2-flappy-path)
         - [2.1. Try `git worktree` (comsumer)](#21-try-git-worktree-consumer)
         - [2.1.1. `git-worktree` Layout](#211-git-worktree-layout)
@@ -197,6 +199,24 @@ cmake --build `
 
 ctest --preset conan-x86_64-windows-vs-msvc-debug `
     -V [-LE "^\.unit"]
+```
+
+#### 1.6.2. Conan + Preset; LLVM Clang | MSYS64 Clang64 [ToC](#table-of-content)
+> NOTE: Strict toolchain root directory. See: [`x86_64-win-llvm_ucrt-ninja_mc.ini`](./conan/profile/universal/x86_64-win-llvm_ucrt-ninja_mc.ini#L13-L25)
+```ps
+conan install . `
+    --build missing `
+    -pr conan/profile/native/x86_64-win-llvm_ucrt-ninja_mc.ini `
+    -s build_type=RelWithDebInfo
+```
+
+#### 1.6.3. Conan + Preset; MinGW | MSYS64 ucrt64 [ToC](#table-of-content)
+> NOTE: Strict toolchain root directory. See: [`x86_64-win-gnu_ucrt-ninja_mc.ini`](./conan/profile/universal/x86_64-win-gnu_ucrt-ninja_mc.ini#L18-L24)
+```ps
+conan install . `
+    --build missing `
+    -pr conan/profile/native/x86_64-win-gnu_ucrt-ninja_mc.ini `
+    -s build_type=RelWithDebInfo
 ```
 
 ### 2. Flappy Path [^ToC](#table-of-content)

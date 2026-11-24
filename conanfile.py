@@ -62,8 +62,8 @@ class ObjectOrientedProgramming(ConanFile):
         san_raw = str(self.options.san_mode).strip()
         if san_raw and san_raw != "none":
             allowed = {"address", "undefined", "thread", "memory", "leak"}
-            
-            #REM: Normalize delimiters and split into clean, unique names
+
+            # REM: Normalize delimiters and split into clean, unique names
             normalized = san_raw.replace(",", ";")
             unique_sanitizers = set()
 
@@ -72,37 +72,44 @@ class ObjectOrientedProgramming(ConanFile):
                 if name:
                     unique_sanitizers.add(name)
 
-            #REM: Validate against allowed options
+            # REM: Validate against allowed options
             invalid = unique_sanitizers - allowed
             if invalid:
                 bad_list = ", ".join(sorted(invalid))
                 raise ConanInvalidConfiguration(f"Invalid san_mode values: {bad_list}")
 
-            #REM: Canonicalize the option string so Conan generates a consistent Package ID
+            # REM: Canonicalize the option string so Conan generates a consistent Package ID
             self.options.san_mode = ";".join(sorted(unique_sanitizers))
 
-    def layout(self):
-        generator = self.conf.get(
-            "tools.cmake.cmaketoolchain:generator", default="default"
-        )
-        generator = re.sub(r"[ -]", "_", generator.strip().lower())
+    def _normalized(self, value):
+        return re.sub(r"[ -]", "_", str(value).strip().lower())
 
-        compiler = str(self.settings.get_safe("compiler") or "unknown").lower()
-        os_name = str(self.settings.get_safe("os") or "unknown").lower()
-        arch = str(self.settings.get_safe("arch") or "unknown").lower()
+    def layout(self):
+
+        generator = self._normalized(
+            self.conf.get("tools.cmake.cmaketoolchain:generator", default="default")
+        )
+        compiler = self._normalized(self.settings.get_safe("compiler") or "unknown")
+        os_name = self._normalized(self.settings.get_safe("os") or "unknown")
+        arch = self._normalized(self.settings.get_safe("arch") or "unknown")
 
         default_folder = f"out/build/{arch}-{os_name}-{generator}-{compiler}"
         build_folder = self.conf.get(
             "tools.cmake.cmake_layout:build_folder",
             default=default_folder,
         )
-        build_folder = re.sub(r"[ -]", "_", build_folder.strip().lower())
-
-        cmake_layout(self, build_folder=build_folder)
+        cmake_layout(self, build_folder=build_folder.lower())
 
     def generate(self):
         deps = CMakeDeps(self)
         tc = CMakeToolchain(self)
+        # user_toolchain_path = os.path.join(
+        #     self.recipe_folder,
+        #     "cmake",
+        #     "user_toolchain",
+        #     "obj_path_max_win_toolchain.cmake",
+        # )
+        # tc.user_toolchains = [user_toolchain_path]
 
         # tc.variables["CMAKE_OBJECT_PATH_MAX"] = 512
 
@@ -161,7 +168,7 @@ class ObjectOrientedProgramming(ConanFile):
         # REM: HHO has no build-time variability - collapse to a single package id.
         if self.info.options.header_only:
             self.info.clear()
-            
+
     def package(self):
         # REM: install() rules in CMakeLists dispatch per flavor AND ship the
         # REM: export targets + config files for plain-CMake consumers:
@@ -215,20 +222,20 @@ class ObjectOrientedProgramming(ConanFile):
         if not san_raw:
             return set()
 
-        #REM: Split on commas or semicolons into a clean list
+        # REM: Split on commas or semicolons into a clean list
         raw_items = re.split(r"[,;]", san_raw)
-        
+
         selected = set()
         for item in raw_items:
             clean_item = item.strip()
             if not clean_item:
                 continue
-                
+
             if clean_item not in allowed:
                 raise ConanInvalidConfiguration(
                     f"Invalid sanitizer '{clean_item}'. Allowed: {sorted(allowed)}"
                 )
-                
+
             selected.add(clean_item)
 
         return selected
